@@ -449,7 +449,7 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
                     +{rewardPreview.xp} XP
                   </span>
                   <span className="font-bold text-amber-400">
-                    +{rewardPreview.gold} Gold
+                    +{rewardPreview.gold} {rewardPreview.gold === 1 ? "Coin" : "Coins"}
                   </span>
                   <span className="font-bold text-purple-400">
                     +1 {attribute}

@@ -19,11 +19,11 @@ export const DIFFICULTY_CONFIG: Record<
   DifficultyType,
   { xp: number; gold: number; label: string; color: string }
 > = {
-  TRIVIAL: { xp: 15, gold: 8, label: "Trivial", color: "text-slate-400" },
-  EASY: { xp: 30, gold: 15, label: "Easy", color: "text-emerald-400" },
-  MEDIUM: { xp: 55, gold: 30, label: "Medium", color: "text-cyan-400" },
-  HARD: { xp: 95, gold: 60, label: "Hard", color: "text-amber-400" },
-  HEROIC: { xp: 160, gold: 110, label: "Heroic", color: "text-purple-400" },
+  TRIVIAL: { xp: 15, gold: 1, label: "Trivial", color: "text-slate-400" },
+  EASY: { xp: 30, gold: 2, label: "Easy", color: "text-emerald-400" },
+  MEDIUM: { xp: 55, gold: 3, label: "Medium", color: "text-cyan-400" },
+  HARD: { xp: 95, gold: 5, label: "Hard", color: "text-amber-400" },
+  HEROIC: { xp: 160, gold: 10, label: "Heroic", color: "text-purple-400" },
 };
 
 export const ATTRIBUTES_CONFIG: Record<
@@ -82,14 +82,15 @@ export function getRequiredXpForNextLevel(level: number): number {
  * Higher difficulty tiers require progressively more gold.
  */
 export function getRequiredGoldForLevelUp(level: number): number {
-  if (level >= 30) return Math.floor(7500 + (level - 30) * 1200);
-  if (level >= 20) return Math.floor(2800 + (level - 20) * 450);
-  if (level >= 10) return Math.floor(850 + (level - 10) * 180);
-  if (level >= 5) return Math.floor(320 + (level - 5) * 100);
-  if (level === 4) return 200;
-  if (level === 3) return 140;
-  if (level === 2) return 90;
-  return 50; // Level 1 -> 2
+  if (level >= 30) return Math.floor(550 + (level - 30) * 50);
+  if (level >= 20) return Math.floor(250 + (level - 20) * 28);
+  if (level >= 10) return Math.floor(80 + (level - 10) * 16);
+  if (level >= 6) return Math.floor(30 + (level - 6) * 11);
+  if (level === 5) return 22;
+  if (level === 4) return 15;
+  if (level === 3) return 10;
+  if (level === 2) return 6;
+  return 3; // Level 1 -> 2: only 3 coins
 }
 
 /**
@@ -168,10 +169,11 @@ export function calculateQuestRewards(
   const baseXp = config.xp;
   const baseGold = config.gold;
 
-  // Streak multiplier: 5% extra per streak day up to max 50% extra
+  // Streak multiplier: 5% extra XP per streak day up to max 50% extra
   const streakMultiplier = Math.min(streak * 0.05, 0.5);
   const streakBonusXp = Math.round(baseXp * streakMultiplier);
-  const streakBonusGold = Math.round(baseGold * streakMultiplier);
+  // Dedicated streak bonus: +1 Coin for maintaining 5+ day streak
+  const streakBonusGold = streak >= 5 ? 1 : 0;
 
   const totalXp = baseXp + streakBonusXp;
   const totalGold = baseGold + streakBonusGold;
