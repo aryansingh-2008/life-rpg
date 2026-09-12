@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   Sparkles,
   Shield,
@@ -51,6 +51,10 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
   const [viewMode, setViewMode] = useState<"2D" | "3D">("2D");
   const [isEvolutionExpanded, setIsEvolutionExpanded] = useState(false);
 
+  // 3D Parallax Tilt State
+  const [tilt, setTilt] = useState({ x: 0, y: 0, glareX: 50, glareY: 50, active: false });
+  const cardRef = useRef<HTMLDivElement>(null);
+
   const character = getCharacterById(characterId);
   const currentTier = getEvolutionTier(level);
 
@@ -62,14 +66,53 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
     (eq) => eq.item?.category === "SHIELD"
   )?.item;
 
-  // Image source: if Ananya, prefer dashboard banner if available
-  const heroImageSrc =
-    character.id === "ananya" && character.dashboardImageUrl
-      ? character.dashboardImageUrl
-      : character.imageUrl || `/characters/${character.id}.jpg`;
+  const heroImageSrc = character.imageUrl || `/characters/${character.id}.jpg`;
+
+  // Handle smooth 3D mouse parallax
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current || viewMode === "3D") return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((y - centerY) / centerY) * -6; // max 6 deg tilt
+    const rotateY = ((x - centerX) / centerX) * 6;
+    const glareX = (x / rect.width) * 100;
+    const glareY = (y / rect.height) * 100;
+
+    setTilt({ x: rotateX, y: rotateY, glareX, glareY, active: true });
+  }, [viewMode]);
+
+  const handleMouseLeave = useCallback(() => {
+    setTilt({ x: 0, y: 0, glareX: 50, glareY: 50, active: false });
+  }, []);
 
   return (
-    <div className="w-full flex flex-col rounded-3xl bg-gradient-to-b from-slate-900/95 via-slate-900/90 to-slate-950/95 border border-cyan-500/30 shadow-2xl overflow-hidden backdrop-blur-xl relative group">
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform: tilt.active
+          ? `perspective(1000px) rotateX(${tilt.x.toFixed(2)}deg) rotateY(${tilt.y.toFixed(2)}deg) scale3d(1.01, 1.01, 1.01)`
+          : "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)",
+        transition: tilt.active ? "transform 0.1s ease-out" : "transform 0.5s ease-out",
+        transformStyle: "preserve-3d",
+      }}
+      className="w-full flex flex-col rounded-3xl bg-gradient-to-b from-slate-900/95 via-slate-900/90 to-slate-950/95 border border-cyan-500/30 shadow-2xl overflow-hidden backdrop-blur-xl relative group"
+    >
+      {/* Holographic Light Glare on Hover */}
+      {tilt.active && viewMode === "2D" && (
+        <div
+          className="absolute inset-0 pointer-events-none z-30 opacity-25 mix-blend-color-dodge transition-opacity duration-200"
+          style={{
+            background: `radial-gradient(circle at ${tilt.glareX}% ${tilt.glareY}%, rgba(255,255,255,0.8) 0%, rgba(56,189,248,0.4) 30%, transparent 70%)`,
+          }}
+        />
+      )}
+
       {/* Dynamic Ambient Background Glow */}
       <div
         className="absolute -top-32 -left-32 w-80 h-80 rounded-full blur-3xl opacity-25 pointer-events-none transition-all duration-700"
@@ -84,7 +127,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
       <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-800/80 z-10">
         <div className="flex items-center gap-2.5">
           <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shadow-md border"
+            className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shadow-md border animate-pulse"
             style={{
               backgroundColor: `${character.accentColor}20`,
               borderColor: `${character.accentColor}60`,
@@ -111,7 +154,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
         {/* Action Controls: 2D/3D Mode Toggle & Switch Character */}
         <div className="flex items-center gap-2">
           {/* View Mode Toggle */}
-          <div className="flex items-center bg-slate-950/90 rounded-xl p-1 border border-slate-800">
+          <div className="flex items-center bg-slate-950/90 rounded-xl p-1 border border-slate-800 shadow-inner">
             <button
               onClick={() => {
                 sounds.playClick();
@@ -122,7 +165,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
                   ? "bg-gradient-to-r from-cyan-500 to-indigo-600 text-slate-950 shadow font-black"
                   : "text-slate-400 hover:text-slate-200"
               }`}
-              title="2D Anime Artwork"
+              title="2D Ultra-HD Anime Art"
             >
               <ImageIcon className="w-3.5 h-3.5" />
               <span>2D Art</span>
@@ -137,10 +180,10 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
                   ? "bg-gradient-to-r from-cyan-500 to-indigo-600 text-slate-950 shadow font-black"
                   : "text-slate-400 hover:text-slate-200"
               }`}
-              title="3D Canvas Mesh"
+              title="3D WebGL Canvas Mesh"
             >
               <Box className="w-3.5 h-3.5" />
-              <span>3D</span>
+              <span>3D Mesh</span>
             </button>
           </div>
 
@@ -159,23 +202,30 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
         </div>
       </div>
 
-      {/* Main Canvas / Visual Arena */}
+      {/* Main Visual Arena */}
       <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] overflow-hidden bg-slate-950 flex items-center justify-center">
         {viewMode === "2D" ? (
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-            {/* Full-bleed high-res Character Artwork */}
+            {/* Full-bleed Ultra-HD 896x1200 Character Artwork */}
             <img
               src={heroImageSrc}
               alt={character.name}
-              className="absolute inset-0 w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-700"
+              className="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-700"
             />
 
-            {/* Gradient Overlays for readability and dramatic atmosphere */}
+            {/* Gradient Overlays for readability and cinematic atmosphere */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-transparent pointer-events-none" />
 
+            {/* Floating Ambient Light Motifs (Tactile Life Effect) */}
+            <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+              <span className="absolute top-1/4 left-1/4 w-1.5 h-1.5 rounded-full bg-cyan-300 animate-ping opacity-75" />
+              <span className="absolute top-1/3 right-1/4 w-2 h-2 rounded-full bg-amber-300 animate-pulse opacity-60" />
+              <span className="absolute bottom-1/3 left-1/3 w-1 h-1 rounded-full bg-indigo-300 animate-ping opacity-80" />
+            </div>
+
             {/* Top-Right Badges on Image */}
-            <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-1.5">
+            <div className="absolute top-3 right-3 z-20 flex flex-col items-end gap-1.5">
               <span className="px-2.5 py-1 rounded-lg bg-slate-950/85 backdrop-blur-md border border-cyan-500/40 text-[11px] font-mono font-bold text-cyan-300 shadow-lg">
                 {character.gender} CHAMPION
               </span>
@@ -192,7 +242,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
             </div>
 
             {/* Bottom-Left Equipped Gear overlay on Image */}
-            <div className="absolute bottom-3 left-3 z-10 flex flex-wrap items-center gap-2">
+            <div className="absolute bottom-3 left-3 z-20 flex flex-wrap items-center gap-2">
               {weaponItem && (
                 <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-950/90 backdrop-blur-md border border-amber-500/40 text-amber-300 text-xs font-mono font-bold shadow-lg">
                   <Sword className="w-3.5 h-3.5 text-amber-400" />
@@ -207,14 +257,14 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
               )}
               {!weaponItem && !shieldItem && (
                 <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-950/80 backdrop-blur-md border border-slate-700/60 text-slate-400 text-xs font-mono">
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                  <Sparkles className="w-3 h-3 text-cyan-400" />
                   <span>Armory gear unequipped</span>
                 </div>
               )}
             </div>
 
-            {/* Bottom-Right Motto */}
-            <div className="absolute bottom-3 right-3 z-10 max-w-[200px] text-right hidden sm:block">
+            {/* Bottom-Right Motto Quote */}
+            <div className="absolute bottom-3 right-3 z-20 max-w-[200px] text-right hidden sm:block">
               <p className="text-[11px] font-serif italic text-cyan-200/90 drop-shadow-md">
                 &ldquo;{character.motto}&rdquo;
               </p>
@@ -233,7 +283,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
       </div>
 
       {/* Evolution Progression Track matching media_1789236256803.jpg */}
-      <div className="px-5 py-3 bg-slate-950/60 border-t border-b border-slate-800/80">
+      <div className="px-5 py-3 bg-slate-950/60 border-t border-b border-slate-800/80 z-10">
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
@@ -310,7 +360,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
       </div>
 
       {/* Quick Base Attributes & Perks Footer */}
-      <div className="px-5 py-3.5 flex flex-col gap-2.5 bg-slate-900/40">
+      <div className="px-5 py-3.5 flex flex-col gap-2.5 bg-slate-900/40 z-10">
         <div className="flex items-center justify-between text-xs font-mono text-slate-400">
           <span>CHARACTER SPECIAL PERKS</span>
           <button
