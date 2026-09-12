@@ -1,0 +1,116 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String          @id @default(cuid())
+  email           String          @unique
+  username        String          @unique
+  passwordHash    String
+  level           Int             @default(1)
+  xp              Int             @default(0)
+  gold            Int             @default(120)
+  hp              Int             @default(100)
+  maxHp           Int             @default(100)
+  mana            Int             @default(50)
+  maxMana         Int             @default(50)
+  streak          Int             @default(1)
+  lastActiveDate  DateTime        @default(now())
+  unspentPoints   Int             @default(0)
+  strength        Int             @default(10)
+  intellect       Int             @default(10)
+  agility         Int             @default(10)
+  vitality        Int             @default(10)
+  spirit          Int             @default(10)
+  title           String          @default("Novice Awakened")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  quests          Quest[]
+  questLogs       QuestLog[]
+  inventory       UserInventory[]
+  bossState       BossState?
+}
+
+model Quest {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  type        String    @default("DAILY") // HABIT, DAILY, BOUNTY
+  attribute   String    @default("INTELLECT") // STRENGTH, INTELLECT, AGILITY, VITALITY, SPIRIT
+  difficulty  String    @default("MEDIUM") // TRIVIAL, EASY, MEDIUM, HARD, HEROIC
+  xpReward    Int       @default(35)
+  goldReward  Int       @default(20)
+  completed   Boolean   @default(false)
+  streak      Int       @default(0)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  logs        QuestLog[]
+}
+
+model QuestLog {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questId         String?
+  quest           Quest?   @relation(fields: [questId], references: [id], onDelete: SetNull)
+  questTitle      String
+  action          String   // COMPLETED, UNCHECKED, FAILED, STREAK_BONUS
+  xpGained        Int      @default(0)
+  goldGained      Int      @default(0)
+  attributeGained String?
+  createdAt       DateTime @default(now())
+}
+
+model ShopItem {
+  id             String          @id @default(cuid())
+  name           String
+  description    String
+  category       String          // WEAPON, SHIELD, HELMET, WINGS, POTION, BADGE
+  cost           Int
+  rarity         String          @default("COMMON") // COMMON, RARE, EPIC, LEGENDARY
+  statBonusType  String?         // STRENGTH, INTELLECT, AGILITY, VITALITY, SPIRIT, HP, XP_BOOST
+  statBonusValue Int             @default(0)
+  visualKey      String          @default("none") // For Three.js 3D rendering
+  icon           String          @default("Sparkles")
+  createdAt      DateTime        @default(now())
+
+  inventoryUsers UserInventory[]
+}
+
+model UserInventory {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       ShopItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  isEquipped Boolean  @default(false)
+  acquiredAt DateTime @default(now())
+
+  @@unique([userId, itemId])
+}
+
+model BossState {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bossName    String   @default("Malakor the Procrastinator")
+  bossTitle   String   @default("Lord of Endless Delay")
+  bossHp      Int      @default(500)
+  bossMaxHp   Int      @default(500)
+  bossLevel   Int      @default(1)
+  isDefeated  Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}
