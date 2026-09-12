@@ -25,6 +25,7 @@ interface UserProfile {
   streak: number;
   title: string;
   characterId?: string;
+  requiredGoldForLevelUp?: number;
 }
 
 interface HeaderNavProps {
@@ -32,6 +33,8 @@ interface HeaderNavProps {
   activeTab: "QUESTS" | "CHARACTER" | "ARMORY" | "RADAR" | "LOGS";
   onTabChange: (tab: "QUESTS" | "CHARACTER" | "ARMORY" | "RADAR" | "LOGS") => void;
   onLogout: () => void;
+  onAscend?: () => void;
+  isAscending?: boolean;
 }
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
@@ -39,6 +42,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   activeTab,
   onTabChange,
   onLogout,
+  onAscend,
+  isAscending,
 }) => {
   const [isMuted, setIsMuted] = useState(sounds.getIsMuted());
 
@@ -108,11 +113,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <div className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-black">
               LV.{user.level}
             </div>
-            <div className="w-24 sm:w-28 flex flex-col gap-0.5">
+            <div className="w-28 sm:w-36 flex flex-col gap-0.5">
               <div className="flex justify-between text-[10px] font-mono text-slate-400">
                 <span>XP</span>
                 <span>
-                  {user.xp}/{user.nextLevelXp}
+                  {user.xp}/{user.nextLevelXp} (Cost: {user.requiredGoldForLevelUp || 50}g)
                 </span>
               </div>
               <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
@@ -123,6 +128,25 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Ascension Action Button if XP is ready */}
+          {user.xp >= (user.nextLevelXp || 100) && (
+            user.gold >= (user.requiredGoldForLevelUp || 50) ? (
+              <button
+                onClick={onAscend}
+                disabled={isAscending}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 text-xs font-mono font-black shadow-lg shadow-amber-500/30 animate-pulse transition active:scale-95"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Ascend to Lv.{user.level + 1} ({user.requiredGoldForLevelUp || 50}g)</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold">
+                <Coins className="w-3.5 h-3.5 text-amber-400" />
+                <span>Need {(user.requiredGoldForLevelUp || 50) - user.gold}g to Ascend</span>
+              </div>
+            )
+          )}
 
           {/* Gold */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs font-mono font-bold text-amber-400">

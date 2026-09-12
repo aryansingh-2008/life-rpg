@@ -77,32 +77,67 @@ export function getRequiredXpForNextLevel(level: number): number {
 }
 
 /**
+ * Non-Linear Level Progression Gold Formula
+ * Coins/Gold required to advance from `level` to `level + 1`.
+ * Higher difficulty tiers require progressively more gold.
+ */
+export function getRequiredGoldForLevelUp(level: number): number {
+  if (level >= 30) return Math.floor(7500 + (level - 30) * 1200);
+  if (level >= 20) return Math.floor(2800 + (level - 20) * 450);
+  if (level >= 10) return Math.floor(850 + (level - 10) * 180);
+  if (level >= 5) return Math.floor(320 + (level - 5) * 100);
+  if (level === 4) return 200;
+  if (level === 3) return 140;
+  if (level === 2) return 90;
+  return 50; // Level 1 -> 2
+}
+
+/**
  * Computes progressive level-ups.
- * If user gains enough XP to skip multiple levels, it processes all thresholds.
+ * Checks both XP and Gold required for level difficulty.
  */
 export function calculateLevelProgression(
   currentLevel: number,
   currentXp: number,
-  gainedXp: number
+  gainedXp: number,
+  currentGold: number = Infinity
 ): {
   newLevel: number;
   newXp: number;
   didLevelUp: boolean;
   levelsGained: number;
   statPointsAwarded: number;
+  goldCost: number;
+  canAffordLevelUp: boolean;
+  goldNeeded: number;
+  pendingAscension: boolean;
 } {
   let level = currentLevel;
   let xp = currentXp + gainedXp;
+  let gold = currentGold;
   let didLevelUp = false;
   let levelsGained = 0;
+  let totalGoldCost = 0;
+  let pendingAscension = false;
+  let goldNeeded = 0;
 
   while (true) {
     const requiredXp = getRequiredXpForNextLevel(level);
     if (xp >= requiredXp) {
-      xp -= requiredXp;
-      level += 1;
-      didLevelUp = true;
-      levelsGained += 1;
+      const requiredGold = getRequiredGoldForLevelUp(level);
+      if (gold >= requiredGold) {
+        xp -= requiredXp;
+        gold -= requiredGold;
+        totalGoldCost += requiredGold;
+        level += 1;
+        didLevelUp = true;
+        levelsGained += 1;
+      } else {
+        // Player has reached XP threshold but needs more coins to level up!
+        pendingAscension = true;
+        goldNeeded = requiredGold - gold;
+        break;
+      }
     } else {
       break;
     }
@@ -114,6 +149,10 @@ export function calculateLevelProgression(
     didLevelUp,
     levelsGained,
     statPointsAwarded: levelsGained * 2, // 2 unspent points per level
+    goldCost: totalGoldCost,
+    canAffordLevelUp: !pendingAscension,
+    goldNeeded,
+    pendingAscension,
   };
 }
 

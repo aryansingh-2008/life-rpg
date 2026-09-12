@@ -2,13 +2,14 @@
 
 import React, { useEffect } from "react";
 import confetti from "canvas-confetti";
-import { Trophy, ArrowUpCircle, ShieldCheck } from "lucide-react";
+import { Trophy, ArrowUpCircle, ShieldCheck, Coins } from "lucide-react";
 import { sounds } from "@/lib/soundEffects";
 
 interface LevelUpModalProps {
   isOpen: boolean;
   newLevel: number;
   statPointsAwarded: number;
+  goldCost?: number;
   title: string;
   onClose: () => void;
 }
@@ -17,6 +18,7 @@ export const LevelUpModal: React.FC<LevelUpModalProps> = ({
   isOpen,
   newLevel,
   statPointsAwarded,
+  goldCost,
   title,
   onClose,
 }) => {
@@ -83,6 +85,14 @@ export const LevelUpModal: React.FC<LevelUpModalProps> = ({
               </span>
               <span className="font-bold text-amber-400">+{statPointsAwarded} Points</span>
             </div>
+            {goldCost && goldCost > 0 ? (
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-slate-400 flex items-center gap-1.5">
+                  <Coins className="w-4 h-4 text-amber-400" /> Rank Ascension Cost
+                </span>
+                <span className="font-bold text-amber-400">-{goldCost} Coins</span>
+              </div>
+            ) : null}
             <div className="flex items-center justify-between text-xs font-mono">
               <span className="text-slate-400 flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" /> Max Health & Mana

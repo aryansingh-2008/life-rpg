@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { getRequiredXpForNextLevel } from "@/lib/rpgEngine";
+import { getRequiredXpForNextLevel, getRequiredGoldForLevelUp } from "@/lib/rpgEngine";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +40,7 @@ export async function GET(req: NextRequest) {
         level: fullUser.level,
         xp: fullUser.xp,
         nextLevelXp,
+        requiredGoldForLevelUp: getRequiredGoldForLevelUp(fullUser.level),
         gold: fullUser.gold,
         hp: fullUser.hp,
         maxHp: fullUser.maxHp,

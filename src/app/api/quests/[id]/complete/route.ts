@@ -6,6 +6,8 @@ import {
   calculateQuestRewards,
   calculateLevelProgression,
   getPlayerTitle,
+  getRequiredXpForNextLevel,
+  getRequiredGoldForLevelUp,
   DifficultyType,
   AttributeType,
 } from "@/lib/rpgEngine";
@@ -76,11 +78,13 @@ export async function POST(
       newStreak
     );
 
-    // 3. Non-linear Level Progression Evaluation
+    // 3. Non-linear Level Progression Evaluation with Gold Requirement
+    const totalPotentialGold = user.gold + rewards.totalGold;
     const progression = calculateLevelProgression(
       user.level,
       user.xp,
-      rewards.totalXp
+      rewards.totalXp,
+      totalPotentialGold
     );
 
     // 4. Attribute & Stat Point updates
@@ -144,7 +148,7 @@ export async function POST(
         data: {
           level: progression.newLevel,
           xp: progression.newXp,
-          gold: user.gold + rewards.totalGold + bossBonusGold,
+          gold: totalPotentialGold + bossBonusGold - progression.goldCost,
           streak: newStreak,
           lastActiveDate: now,
           title: getPlayerTitle(progression.newLevel),
@@ -185,7 +189,7 @@ export async function POST(
           questTitle: quest.title,
           action: "COMPLETED",
           xpGained: rewards.totalXp,
-          goldGained: rewards.totalGold + bossBonusGold,
+          goldGained: rewards.totalGold + bossBonusGold - progression.goldCost,
           attributeGained: quest.attribute,
         },
       }),
@@ -194,7 +198,21 @@ export async function POST(
     return NextResponse.json({
       success: true,
       quest: updatedQuest,
-      user: updatedUser,
+      user: {
+        ...updatedUser,
+        nextLevelXp: getRequiredXpForNextLevel(updatedUser.level),
+        requiredGoldForLevelUp: getRequiredGoldForLevelUp(updatedUser.level),
+        characterId: updatedUser.characterId || "aarav",
+        unlockedCharacters: Array.from(
+          new Set([
+            "aarav",
+            "ananya",
+            ...(updatedUser.unlockedCharacters
+              ? updatedUser.unlockedCharacters.split(",").map((s) => s.trim())
+              : []),
+          ])
+        ),
+      },
       rewards: {
         ...rewards,
         bossBonusGold,
@@ -204,6 +222,9 @@ export async function POST(
         levelsGained: progression.levelsGained,
         newLevel: progression.newLevel,
         statPointsAwarded: progression.statPointsAwarded,
+        goldCost: progression.goldCost,
+        pendingAscension: progression.pendingAscension,
+        goldNeeded: progression.goldNeeded,
       },
       boss: {
         bossDamageDealt: rewards.bossDamage,

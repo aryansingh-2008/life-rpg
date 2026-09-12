@@ -29,6 +29,7 @@ export default function Home() {
   const [isProcessingShopId, setIsProcessingShopId] = useState<string | null>(null);
   const [isProcessingCharId, setIsProcessingCharId] = useState<string | null>(null);
   const [isAllocatingStat, setIsAllocatingStat] = useState(false);
+  const [isAscending, setIsAscending] = useState(false);
   const [lastDamageDealt, setLastDamageDealt] = useState<number | undefined>(undefined);
 
   // Level Up Modal State
@@ -36,11 +37,13 @@ export default function Home() {
     isOpen: boolean;
     newLevel: number;
     statPointsAwarded: number;
+    goldCost?: number;
     title: string;
   }>({
     isOpen: false,
     newLevel: 1,
     statPointsAwarded: 0,
+    goldCost: 0,
     title: "",
   });
 
@@ -123,6 +126,7 @@ export default function Home() {
           isOpen: true,
           newLevel: data.progression.newLevel,
           statPointsAwarded: data.progression.statPointsAwarded,
+          goldCost: data.progression.goldCost,
           title: data.user.title,
         });
       }
@@ -287,6 +291,33 @@ export default function Home() {
     }
   };
 
+  // Manual Rank Ascension handler
+  const handleAscend = async () => {
+    setIsAscending(true);
+    try {
+      const res = await fetch("/api/player/ascend", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Ascension failed");
+
+      setUser(data.user);
+      setLevelUpData({
+        isOpen: true,
+        newLevel: data.progression.newLevel,
+        statPointsAwarded: data.progression.statPointsAwarded,
+        goldCost: data.progression.goldCost,
+        title: data.progression.title,
+      });
+      sounds.playLevelUp();
+      refreshAll();
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsAscending(false);
+    }
+  };
+
   // Logout handler
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -326,6 +357,8 @@ export default function Home() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onLogout={handleLogout}
+        onAscend={handleAscend}
+        isAscending={isAscending}
       />
 
       <div className="max-w-7xl mx-auto w-full px-4 pt-6 flex flex-col gap-6">
@@ -431,6 +464,7 @@ export default function Home() {
         isOpen={levelUpData.isOpen}
         newLevel={levelUpData.newLevel}
         statPointsAwarded={levelUpData.statPointsAwarded}
+        goldCost={levelUpData.goldCost}
         title={levelUpData.title}
         onClose={() => setLevelUpData((prev) => ({ ...prev, isOpen: false }))}
       />
