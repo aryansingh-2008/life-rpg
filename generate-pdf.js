@@ -180,7 +180,7 @@ function createManual() {
   );
   addBullet("Dealing Damage", "Completing tasks converts your gained XP into kinetic boss damage (Damage = 85% of total XP).");
   addBullet("Floating Damage Popups", "Attacking triggers visual damage flashes ('-45 HP!') and a cyber strike sound.");
-  addBullet("Boss Slaying Bounty", "Depleting the Boss HP to 0 slays the beast, awarding a +150g Victory Bounty and spawning the next higher tier Boss!");
+  addBullet("Boss Slaying Bounty", "Depleting the Boss HP to 0 slays the beast, awarding a +150 Coins Victory Bounty and spawning the next higher tier Boss!");
 
   addHeader("6. Relic Armory & In-Game Economy", "Spending Your Gold on Tangible Upgrades");
   addBullet("Browse Relics", "Weapons, Shields, Wings, Helms, and Potions across Common, Rare, Epic, and Legendary tiers.");

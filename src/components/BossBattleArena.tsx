@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Skull, Swords, Trophy } from "lucide-react";
+import { Skull, Swords, Trophy, Coins } from "lucide-react";
 
 interface BossBattleArenaProps {
   bossState?: {
@@ -59,8 +59,8 @@ export const BossBattleArena: React.FC<BossBattleArenaProps> = ({
               <span className="text-xs font-mono font-bold tracking-wider text-red-400 uppercase">
                 ACTIVE RAID BOSS
               </span>
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                <Trophy className="w-3 h-3" /> +150g Victory Bounty
+              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <Coins className="w-3.5 h-3.5 text-amber-400" /> +150 Coins Victory Bounty
               </span>
             </div>
             <h3 className="text-lg font-black text-slate-100 tracking-wide">

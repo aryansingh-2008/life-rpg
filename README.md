@@ -73,7 +73,7 @@ Traditional habit trackers and to-do lists fail because they feel like chores. T
 ### 4. Boss Raid Arena (Hackathon X-Factor)
 - Active boss: **Malakor the Procrastinator** (Lord of Endless Delay).
 - Every completed quest strikes the boss with kinetic damage.
-- Slaying the boss triggers screen-wide celebratory fireworks and awards a +150g victory bounty before spawning the next tier boss.
+- Slaying the boss triggers screen-wide celebratory fireworks and awards a +150 Coins victory bounty before spawning the next tier boss.
 
 ### 5. Web Audio API Sound Synthesizer
 - Built-in zero-dependency sound engine. No missing audio files!
