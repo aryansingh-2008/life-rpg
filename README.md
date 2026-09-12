@@ -10,8 +10,10 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 
 [![Live Demo](https://img.shields.io/badge/LIVE_PRODUCTION_URL-https%3A%2F%2Flife--rpg--nine--gules.vercel.app-00f2fe?style=for-the-badge&logo=vercel)](https://life-rpg-nine-gules.vercel.app)
+[![Walkthrough Video](https://img.shields.io/badge/WALKTHROUGH_VIDEO-4.8MB_WebM-ff0055?style=for-the-badge)](https://life-rpg-nine-gules.vercel.app/aetheria-demo-walkthrough.webm)
 
 ---
+
 
 ## 🌟 The Core Problem & Our Solution
 
@@ -153,9 +155,13 @@ To evaluate the project instantly without signing up:
 
 ---
 
-## 🎥 Demonstration Video Walkthrough Script (90–180s)
+## 🎥 Demonstration Video Walkthrough (90–180s)
+
+> 📹 **Official Walkthrough Video**: [Direct Video Stream / Download (`aetheria-demo-walkthrough.webm`)](https://life-rpg-nine-gules.vercel.app/aetheria-demo-walkthrough.webm)  
+> *Recorded in 720p HD (4.79 MB, strictly under 100MB requirement) demonstrating login, 3D avatar, quest creation, quest completion & boss attack, leveling celebration, armory, 20 heroes roster, and F5 refresh database persistence.*
 
 | Time Window | Visual Action | Narrative Point |
+
 | :--- | :--- | :--- |
 | **0:00 - 0:25** | Open app, show Auth screen, click **"1-Click Demo Character Login"** or Sign Up. | Introduce Aetheria: Solving the delayed gratification problem of habit trackers with a full-stack 3D Life RPG. |
 | **0:25 - 0:50** | Inspect the **3D Hero Avatar** by dragging with the mouse. Show the equipped weapon/shield. | Highlight Three.js integration, WebGL rendering, and responsive controls. |
