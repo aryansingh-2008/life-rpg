@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as THREE from "three";
 import { sounds } from "@/lib/soundEffects";
 import { Sparkles } from "lucide-react";
+import { getCharacterById } from "@/lib/charactersConfig";
 
 export interface HeroArchetype {
   id: string;
@@ -241,9 +242,14 @@ interface Hero3DCanvasProps {
       rarity: string;
     };
   }>;
+  characterId?: string;
 }
 
-export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems = [] }) => {
+export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({
+  level,
+  equippedItems = [],
+  characterId,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -252,7 +258,29 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
   const rotationYRef = useRef(0);
 
   const [selectedHeroIndex, setSelectedHeroIndex] = useState(0);
-  const activeHero = HERO_ROSTER[selectedHeroIndex] || HERO_ROSTER[0];
+
+  const configChar = useMemo(() => {
+    return characterId ? getCharacterById(characterId) : null;
+  }, [characterId]);
+
+  const activeHero: HeroArchetype = useMemo(() => {
+    if (configChar) {
+      return {
+        id: configChar.id,
+        name: `${configChar.name} (${configChar.classTag})`,
+        badge: configChar.gender === "BOY" ? "Boy Champion" : "Girl Champion",
+        element: configChar.archetype,
+        stats: `Req Lv. ${configChar.requiredLevel}`,
+        colorHex: configChar.accentColor,
+        primaryColor: configChar.primaryColor,
+        secondaryColor: configChar.secondaryColor,
+        trimColor: configChar.trimColor,
+        emissiveColor: configChar.emissiveColor,
+        meshType: (configChar.meshType as any) || "knight",
+      };
+    }
+    return HERO_ROSTER[selectedHeroIndex] || HERO_ROSTER[0];
+  }, [configChar, selectedHeroIndex]);
 
   const activeVisualKeys = new Set(
     equippedItems.map((entry) => entry.item.visualKey).filter(Boolean)

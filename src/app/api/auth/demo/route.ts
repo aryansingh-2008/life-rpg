@@ -80,6 +80,16 @@ export async function POST() {
         spirit: user.spirit,
         title: user.title,
         unspentPoints: user.unspentPoints,
+        characterId: user.characterId || "aarav",
+        unlockedCharacters: Array.from(
+          new Set([
+            "aarav",
+            "ananya",
+            ...(user.unlockedCharacters
+              ? user.unlockedCharacters.split(",").map((s) => s.trim())
+              : []),
+          ])
+        ),
         bossState: user.bossState,
       },
     });

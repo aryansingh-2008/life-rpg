@@ -30,6 +30,8 @@ model User {
   vitality        Int             @default(10)
   spirit          Int             @default(10)
   title           String          @default("Novice Awakened")
+  characterId     String          @default("aarav")
+  unlockedCharacters String        @default("aarav,ananya")
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 

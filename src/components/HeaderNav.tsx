@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { sounds } from "@/lib/soundEffects";
+import { getCharacterById } from "@/lib/charactersConfig";
 
 interface UserProfile {
   username: string;
@@ -23,12 +24,13 @@ interface UserProfile {
   maxMana: number;
   streak: number;
   title: string;
+  characterId?: string;
 }
 
 interface HeaderNavProps {
   user: UserProfile;
-  activeTab: "QUESTS" | "ARMORY" | "RADAR" | "LOGS";
-  onTabChange: (tab: "QUESTS" | "ARMORY" | "RADAR" | "LOGS") => void;
+  activeTab: "QUESTS" | "CHARACTER" | "ARMORY" | "RADAR" | "LOGS";
+  onTabChange: (tab: "QUESTS" | "CHARACTER" | "ARMORY" | "RADAR" | "LOGS") => void;
   onLogout: () => void;
 }
 
@@ -45,6 +47,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
     setIsMuted(muted);
     if (!muted) sounds.playClick();
   };
+
+  const activeHero = getCharacterById(user.characterId || "aarav");
 
   const xpPercent = Math.min(
     100,
@@ -67,6 +71,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 </span>
                 <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                   LIFE RPG
+                </span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold">
+                  {activeHero.name} ({activeHero.classTag})
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
@@ -152,10 +159,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
       {/* Primary Sub-Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 flex items-center gap-2 overflow-x-auto py-2 border-t border-slate-900">
         {[
-          { id: "QUESTS", label: "Quests & Daily Rituals" },
-          { id: "ARMORY", label: "Relic Armory & Shop" },
-          { id: "RADAR", label: "Attributes & 3D Hero" },
-          { id: "LOGS", label: "Historical Audit Chronicles" },
+          { id: "QUESTS", label: "⚔️ Quests & Daily Rituals" },
+          { id: "CHARACTER", label: "✦ Characters (20 Heroes)" },
+          { id: "ARMORY", label: "🛡️ Relic Armory & Shop" },
+          { id: "RADAR", label: "📊 Attributes & 3D Hero" },
+          { id: "LOGS", label: "📜 Historical Chronicles" },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -165,8 +173,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             }}
             className={`px-4 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition ${
               activeTab === tab.id
-                ? "bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 text-cyan-300 border border-cyan-500/40"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
             }`}
           >
             {tab.label}

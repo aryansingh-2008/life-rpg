@@ -8,6 +8,7 @@ import { BossBattleArena } from "@/components/BossBattleArena";
 import { QuestSection } from "@/components/QuestSection";
 import { ShopArmory } from "@/components/ShopArmory";
 import { ActivityLogs } from "@/components/ActivityLogs";
+import { CharacterSelectScreen } from "@/components/CharacterSelectScreen";
 import { LevelUpModal } from "@/components/LevelUpModal";
 import { AuthModal } from "@/components/AuthModal";
 import { LandingPage } from "@/components/LandingPage";
@@ -21,11 +22,12 @@ export default function Home() {
   const [shopItems, setShopItems] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"QUESTS" | "ARMORY" | "RADAR" | "LOGS">("QUESTS");
+  const [activeTab, setActiveTab] = useState<"QUESTS" | "CHARACTER" | "ARMORY" | "RADAR" | "LOGS">("QUESTS");
 
   // Interactive feedback states
   const [isProcessingQuestId, setIsProcessingQuestId] = useState<string | null>(null);
   const [isProcessingShopId, setIsProcessingShopId] = useState<string | null>(null);
+  const [isProcessingCharId, setIsProcessingCharId] = useState<string | null>(null);
   const [isAllocatingStat, setIsAllocatingStat] = useState(false);
   const [lastDamageDealt, setLastDamageDealt] = useState<number | undefined>(undefined);
 
@@ -243,6 +245,48 @@ export default function Home() {
     }
   };
 
+  // Recruit / Unlock character handler
+  const handleUnlockCharacter = async (characterId: string) => {
+    setIsProcessingCharId(characterId);
+    try {
+      const res = await fetch("/api/character/unlock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ characterId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to recruit character");
+
+      setUser(data.user);
+      refreshAll();
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsProcessingCharId(null);
+    }
+  };
+
+  // Select / Equip character handler
+  const handleSelectCharacter = async (characterId: string) => {
+    setIsProcessingCharId(characterId);
+    try {
+      const res = await fetch("/api/character/select", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ characterId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to equip character");
+
+      setUser(data.user);
+      refreshAll();
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsProcessingCharId(null);
+    }
+  };
+
   // Logout handler
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -291,6 +335,7 @@ export default function Home() {
           <div className="lg:col-span-5 w-full">
             <Hero3DCanvas
               level={user.level}
+              characterId={user.characterId}
               equippedItems={user.inventory?.filter((inv: any) => inv.isEquipped)}
             />
           </div>
@@ -326,6 +371,15 @@ export default function Home() {
               onCreateQuest={handleCreateQuest}
               onDeleteQuest={handleDeleteQuest}
               isProcessingId={isProcessingQuestId}
+            />
+          )}
+
+          {activeTab === "CHARACTER" && (
+            <CharacterSelectScreen
+              user={user}
+              onSelectCharacter={handleSelectCharacter}
+              onUnlockCharacter={handleUnlockCharacter}
+              isProcessingId={isProcessingCharId}
             />
           )}
 

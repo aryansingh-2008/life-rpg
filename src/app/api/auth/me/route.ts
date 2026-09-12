@@ -53,6 +53,16 @@ export async function GET(req: NextRequest) {
         spirit: fullUser.spirit,
         title: fullUser.title,
         unspentPoints: fullUser.unspentPoints,
+        characterId: fullUser.characterId || "aarav",
+        unlockedCharacters: Array.from(
+          new Set([
+            "aarav",
+            "ananya",
+            ...(fullUser.unlockedCharacters
+              ? fullUser.unlockedCharacters.split(",").map((s) => s.trim())
+              : []),
+          ])
+        ),
         inventory: fullUser.inventory,
         bossState: fullUser.bossState,
       },
