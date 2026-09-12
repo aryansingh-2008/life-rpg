@@ -429,7 +429,7 @@ export const CharacterSelectScreen: React.FC<CharacterSelectScreenProps> = ({
                       className="w-full py-1 flex items-center justify-center gap-1 text-[11px] font-mono font-bold text-amber-300 bg-amber-500/20 hover:bg-amber-500/30 rounded-lg border border-amber-500/40 transition disabled:opacity-50"
                     >
                       <Coins className="w-3 h-3 text-amber-400" />
-                      <span>{char.coinCost}g</span>
+                      <span>{char.coinCost}</span>
                     </button>
                   )}
                 </div>
@@ -666,11 +666,11 @@ export const CharacterSelectScreen: React.FC<CharacterSelectScreenProps> = ({
                     className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-mono font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
                   >
                     <Coins className="w-4 h-4 text-slate-950" />
-                    <span>Recruit for {selectedChar.coinCost} Gold</span>
+                    <span>Recruit for {selectedChar.coinCost} Coins</span>
                   </button>
                   {!canAffordSelected && (
                     <span className="text-[11px] font-mono text-amber-400 text-center">
-                      Need {selectedChar.coinCost - user.gold} more gold coins to recruit
+                      Need {selectedChar.coinCost - user.gold} more coins to recruit
                     </span>
                   )}
                 </div>

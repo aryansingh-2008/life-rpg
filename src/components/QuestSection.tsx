@@ -312,7 +312,7 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
                       +{quest.xpReward} XP
                     </span>
                     <span className="font-bold text-amber-400">
-                      +{quest.goldReward}g
+                      +{quest.goldReward} Coins
                     </span>
                   </div>
 

@@ -75,7 +75,7 @@ export const ActivityLogs: React.FC<ActivityLogsProps> = ({ logs }) => {
                     +{log.xpGained} XP
                   </span>
                   <span className="font-bold text-amber-400 flex items-center gap-0.5">
-                    <Coins className="w-3 h-3" /> +{log.goldGained}g
+                    <Coins className="w-3 h-3" /> +{log.goldGained} Coins
                   </span>
                 </div>
               </div>

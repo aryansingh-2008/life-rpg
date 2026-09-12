@@ -171,7 +171,7 @@ export const ShopArmory: React.FC<ShopArmoryProps> = ({
               <div className="pt-4 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                 <div className="flex items-center gap-1 font-mono text-sm font-black text-amber-400">
                   <Coins className="w-4 h-4 text-amber-400" />
-                  <span>{item.cost}g</span>
+                  <span>{item.cost} Coins</span>
                 </div>
 
                 {item.owned ? (

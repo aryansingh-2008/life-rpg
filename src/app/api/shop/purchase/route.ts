@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     // Anti-Cheat: Validate gold authoritatively on server
     if (user.gold < item.cost) {
       return NextResponse.json(
-        { error: `Insufficient Gold! Need ${item.cost}g, but you only have ${user.gold}g.` },
+        { error: `Insufficient coins! Need ${item.cost} coins, but you only have ${user.gold} coins.` },
         { status: 400 }
       );
     }

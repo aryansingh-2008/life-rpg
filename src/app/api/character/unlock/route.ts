@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
     if (user.gold < character.coinCost) {
       return NextResponse.json(
         {
-          error: `Insufficient gold! You need ${character.coinCost}g to recruit ${character.name} (Current: ${user.gold}g).`,
+          error: `Insufficient coins! You need ${character.coinCost} coins to recruit ${character.name} (Current: ${user.gold} coins).`,
         },
         { status: 400 }
       );

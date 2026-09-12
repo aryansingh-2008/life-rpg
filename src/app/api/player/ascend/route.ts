@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     if (user.gold < requiredGold) {
       return NextResponse.json(
         {
-          error: `Insufficient coins for Rank Ascension! Requires ${requiredGold}g (Current: ${user.gold}g).`,
+          error: `Insufficient coins for Rank Ascension! Requires ${requiredGold} coins (Current: ${user.gold} coins).`,
         },
         { status: 400 }
       );
