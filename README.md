@@ -10,7 +10,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 
 [![Live Demo](https://img.shields.io/badge/LIVE_PRODUCTION_URL-https%3A%2F%2Flife--rpg--nine--gules.vercel.app-00f2fe?style=for-the-badge&logo=vercel)](https://life-rpg-nine-gules.vercel.app)
-[![Walkthrough Video](https://img.shields.io/badge/WALKTHROUGH_VIDEO-4.8MB_WebM-ff0055?style=for-the-badge)](https://life-rpg-nine-gules.vercel.app/aetheria-demo-walkthrough.webm)
+[![Walkthrough Video](https://img.shields.io/badge/WALKTHROUGH_VIDEO-1080p_Full_HD-ff0055?style=for-the-badge)](https://life-rpg-nine-gules.vercel.app/aetheria-demo-walkthrough.webm)
 
 ---
 
@@ -158,7 +158,7 @@ To evaluate the project instantly without signing up:
 ## 🎥 Demonstration Video Walkthrough (90–180s)
 
 > 📹 **Official Walkthrough Video**: [Direct Video Stream / Download (`aetheria-demo-walkthrough.webm`)](https://life-rpg-nine-gules.vercel.app/aetheria-demo-walkthrough.webm)  
-> *Recorded in 720p HD (4.79 MB, strictly under 100MB requirement) demonstrating login, 3D avatar, quest creation, quest completion & boss attack, leveling celebration, armory, 20 heroes roster, and F5 refresh database persistence.*
+> *Recorded in crystal-clear 1080p Full HD (9.94 MB, 108 seconds, strictly under 100MB requirement) with custom glowing cyan cyber cursor, demonstrating login, 3D avatar, Adventurer ID profile, quest creation, quest completion & boss attack, leveling celebration, armory, 20 heroes roster, and F5 refresh Supabase PostgreSQL persistence.*
 
 | Time Window | Visual Action | Narrative Point |
 
