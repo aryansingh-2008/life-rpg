@@ -351,7 +351,7 @@ export const CharacterSelectScreen: React.FC<CharacterSelectScreenProps> = ({
                   <img
                     src={char.imageUrl}
                     alt={char.name}
-                    className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    className="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = "none";
                     }}
@@ -448,7 +448,7 @@ export const CharacterSelectScreen: React.FC<CharacterSelectScreenProps> = ({
               <img
                 src={selectedChar.imageUrl}
                 alt={selectedChar.name}
-                className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                className="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-slate-950/50 pointer-events-none" />
 

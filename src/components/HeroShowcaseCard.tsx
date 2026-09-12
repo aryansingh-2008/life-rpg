@@ -167,7 +167,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
             <img
               src={heroImageSrc}
               alt={character.name}
-              className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+              className="absolute inset-0 w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-700"
             />
 
             {/* Gradient Overlays for readability and dramatic atmosphere */}
