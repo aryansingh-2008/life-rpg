@@ -124,10 +124,10 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
       />
 
       {/* Top Header Toolbar */}
-      <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-800/80 z-10">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 sm:px-5 pt-3.5 pb-2.5 sm:pt-4 sm:pb-3 border-b border-slate-800/80 z-10 gap-2.5">
         <div className="flex items-center gap-2.5">
           <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shadow-md border animate-pulse"
+            className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shadow-md border animate-pulse shrink-0"
             style={{
               backgroundColor: `${character.accentColor}20`,
               borderColor: `${character.accentColor}60`,
@@ -138,21 +138,21 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <h2 className="font-serif text-lg font-black text-white tracking-wide">
+              <h2 className="font-serif text-base sm:text-lg font-black text-white tracking-wide">
                 {character.name}
               </h2>
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+              <span className="text-[11px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                 Lv. {level} {currentTier.tierName}
               </span>
             </div>
-            <span className="text-[11px] font-mono text-cyan-400 font-semibold">
+            <span className="text-[10px] sm:text-[11px] font-mono text-cyan-400 font-semibold">
               {character.classTag} • {character.archetype}
             </span>
           </div>
         </div>
 
         {/* Action Controls: 2D/3D Mode Toggle & Switch Character */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2">
           {/* View Mode Toggle */}
           <div className="flex items-center bg-slate-950/90 rounded-xl p-1 border border-slate-800 shadow-inner">
             <button
@@ -203,14 +203,14 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
       </div>
 
       {/* Main Visual Arena */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] overflow-hidden bg-slate-950 flex items-center justify-center">
+      <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] max-h-[380px] sm:max-h-[460px] overflow-hidden bg-slate-950 flex items-center justify-center">
         {viewMode === "2D" ? (
           <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
             {/* Full-bleed Ultra-HD 896x1200 Character Artwork */}
             <img
               src={heroImageSrc}
               alt={character.name}
-              className="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-700"
+              className="absolute inset-0 w-full h-full object-cover object-[center_18%] group-hover:scale-105 transition-transform duration-700"
             />
 
             {/* Gradient Overlays for readability and cinematic atmosphere */}
@@ -224,13 +224,13 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
               <span className="absolute bottom-1/3 left-1/3 w-1 h-1 rounded-full bg-indigo-300 animate-ping opacity-80" />
             </div>
 
-            {/* Top-Right Badges on Image */}
-            <div className="absolute top-3 right-3 z-20 flex flex-col items-end gap-1.5">
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950/85 backdrop-blur-md border border-cyan-500/40 text-[11px] font-mono font-bold text-cyan-300 shadow-lg">
+            {/* Top-Right Badges on Image (Safely inset from curved corners) */}
+            <div className="absolute top-3.5 right-4 z-20 flex flex-col items-end gap-1.5">
+              <span className="px-2.5 py-0.5 sm:py-1 rounded-lg bg-slate-950/90 backdrop-blur-md border border-cyan-500/40 text-[10px] sm:text-[11px] font-mono font-bold text-cyan-300 shadow-lg">
                 {character.gender} CHAMPION
               </span>
               <span
-                className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold shadow"
+                className="px-2.5 py-0.5 rounded-md text-[9px] sm:text-[10px] font-mono font-bold shadow"
                 style={{
                   backgroundColor: `${character.accentColor}30`,
                   color: character.accentColor,
@@ -283,21 +283,21 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
       </div>
 
       {/* Evolution Progression Track matching media_1789236256803.jpg */}
-      <div className="px-5 py-3 bg-slate-950/60 border-t border-b border-slate-800/80 z-10">
-        <div className="flex items-center justify-between mb-2.5">
-          <div className="flex items-center gap-2">
+      <div className="px-3.5 sm:px-5 py-3 bg-slate-950/60 border-t border-b border-slate-800/80 z-10">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider">
+            <span className="text-[11px] sm:text-xs font-mono font-bold text-slate-300 uppercase tracking-wider">
               Evolution Path
             </span>
           </div>
-          <span className="text-[11px] font-mono text-cyan-400 font-bold">
+          <span className="text-[10px] sm:text-[11px] font-mono text-cyan-400 font-bold">
             Current Tier: {currentTier.tierName} (Lv. {level})
           </span>
         </div>
 
         {/* 5-Tier Illustrated Progression Row */}
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
           {EVOLUTION_TIERS.map((tier) => {
             const isCurrent = currentTier.tierName === tier.tierName;
             const isUnlockedTier = level >= tier.minLevel;
@@ -306,7 +306,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
             return (
               <div
                 key={tier.tierName}
-                className={`flex flex-col items-center rounded-xl p-1.5 border transition-all duration-300 relative overflow-hidden group ${
+                className={`flex flex-col items-center rounded-xl p-1 sm:p-1.5 border transition-all duration-300 relative overflow-hidden group ${
                   isCurrent
                     ? "bg-cyan-950/50 border-cyan-400 shadow-md shadow-cyan-500/20 ring-1 ring-cyan-400"
                     : isUnlockedTier
@@ -314,15 +314,15 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
                     : "bg-slate-950/60 border-slate-850 opacity-40 text-slate-500"
                 }`}
               >
-                {/* Active indicator badge */}
+                {/* Active indicator dot */}
                 {isCurrent && (
-                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-cyan-400 text-slate-950 text-[8px] font-mono font-black uppercase tracking-wider shadow">
-                    Active
+                  <span className="absolute top-0.5 right-0.5 px-1 py-0.2 rounded bg-cyan-400 text-slate-950 text-[7px] sm:text-[8px] font-mono font-black uppercase tracking-wider shadow">
+                    ●
                   </span>
                 )}
 
                 {/* Tier Image Thumbnail */}
-                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg overflow-hidden relative mb-1 border border-slate-700/70 bg-slate-900 flex-shrink-0">
+                <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg overflow-hidden relative mb-1 border border-slate-700/70 bg-slate-900 shrink-0">
                   <img
                     src={tierImg}
                     alt={tier.tierName}
@@ -333,7 +333,7 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
                   />
                   {!isUnlockedTier && (
                     <div className="absolute inset-0 bg-slate-950/80 flex items-center justify-center">
-                      <Lock className="w-3.5 h-3.5 text-slate-400" />
+                      <Lock className="w-3 h-3 text-slate-400" />
                     </div>
                   )}
                   {isUnlockedTier && !isCurrent && (
@@ -344,13 +344,13 @@ export const HeroShowcaseCard: React.FC<HeroShowcaseCardProps> = ({
                 </div>
 
                 <span
-                  className={`text-[10px] font-sans font-bold leading-tight text-center ${
+                  className={`text-[9px] sm:text-[10px] font-sans font-bold leading-tight text-center truncate w-full ${
                     isCurrent ? "text-cyan-300" : "text-slate-200"
                   }`}
                 >
                   {tier.tierName}
                 </span>
-                <span className="text-[8px] font-mono text-slate-400 mt-0.5">
+                <span className="text-[7px] sm:text-[8px] font-mono text-slate-400 mt-0.5">
                   {tier.levelRange}
                 </span>
               </div>

@@ -15,7 +15,7 @@ import { AuthModal } from "@/components/AuthModal";
 import { LandingPage } from "@/components/LandingPage";
 import { AttributeType, DifficultyType, QuestType } from "@/lib/rpgEngine";
 import { sounds } from "@/lib/soundEffects";
-import { Loader2, Shield, X } from "lucide-react";
+import { Loader2, Shield, X, Swords, Sparkles, Zap, ScrollText } from "lucide-react";
 
 export default function Home() {
   const [user, setUser] = useState<any | null>(null);
@@ -379,7 +379,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col bg-slate-950 pb-16">
+    <main className="min-h-screen flex flex-col bg-slate-950 pb-24 md:pb-16">
       {/* Offline Alert Banner */}
       {isOffline && (
         <div className="bg-amber-500/20 border-b border-amber-500/40 px-4 py-2 text-center text-xs font-mono font-bold text-amber-300 flex items-center justify-center gap-2">
@@ -401,9 +401,9 @@ export default function Home() {
 
       {/* Streak Protection & Milestone Banner */}
       {streakNotice && (
-        <div className="bg-gradient-to-r from-indigo-950/90 via-slate-900 to-indigo-950/90 border-b border-indigo-500/30 px-4 py-2.5 shadow-md shadow-indigo-950/40 animate-fadeIn">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5 text-xs font-mono font-bold text-indigo-200">
+        <div className="bg-gradient-to-r from-indigo-950/90 via-slate-900 to-indigo-950/90 border-b border-indigo-500/30 px-3 sm:px-4 py-2 sm:py-2.5 shadow-md shadow-indigo-950/40 animate-fadeIn">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs font-mono font-bold text-indigo-200">
               <Shield className="w-4 h-4 text-indigo-400 shrink-0 animate-pulse" />
               <span>{streakNotice}</span>
             </div>
@@ -419,9 +419,9 @@ export default function Home() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto w-full px-4 pt-6 flex flex-col gap-6">
-        {/* Top Hero Grid: 3D Hero Avatar + Boss Battle Arena */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 pt-4 sm:pt-6 flex flex-col gap-6">
+        {/* DESKTOP VIEW (lg and above): Dual-Column Showcase + Boss Raid Arena */}
+        <div className="hidden lg:grid lg:grid-cols-12 gap-6 items-start">
           {/* Hero Showcase Card (Rich 2D Character Artwork & Evolution Path) */}
           <div className="lg:col-span-5 w-full">
             <HeroShowcaseCard
@@ -454,26 +454,48 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Tab Sections */}
-        <div className="mt-4">
+        {/* Tab Sections (Adaptive on Mobile & Desktop) */}
+        <div className="mt-0 lg:mt-4">
           {activeTab === "QUESTS" && (
-            <QuestSection
-              quests={quests}
-              onCompleteQuest={handleCompleteQuest}
-              onCreateQuest={handleCreateQuest}
-              onUpdateQuest={handleUpdateQuest}
-              onDeleteQuest={handleDeleteQuest}
-              isProcessingId={isProcessingQuestId}
-            />
+            <div className="flex flex-col gap-6">
+              {/* On mobile, display the Boss Arena directly above Quests so completing tasks attacks the boss! */}
+              <div className="block lg:hidden">
+                <BossBattleArena
+                  bossState={user.bossState}
+                  lastDamageDealt={lastDamageDealt}
+                />
+              </div>
+
+              <QuestSection
+                quests={quests}
+                onCompleteQuest={handleCompleteQuest}
+                onCreateQuest={handleCreateQuest}
+                onUpdateQuest={handleUpdateQuest}
+                onDeleteQuest={handleDeleteQuest}
+                isProcessingId={isProcessingQuestId}
+              />
+            </div>
           )}
 
           {activeTab === "CHARACTER" && (
-            <CharacterSelectScreen
-              user={user}
-              onSelectCharacter={handleSelectCharacter}
-              onUnlockCharacter={handleUnlockCharacter}
-              isProcessingId={isProcessingCharId}
-            />
+            <div className="flex flex-col gap-6">
+              {/* On mobile, showcase the active hero prominently above the 20-character roster */}
+              <div className="block lg:hidden">
+                <HeroShowcaseCard
+                  level={user.level}
+                  characterId={user.characterId}
+                  equippedItems={user.inventory?.filter((inv: any) => inv.isEquipped)}
+                  onSwitchCharacter={() => {}}
+                />
+              </div>
+
+              <CharacterSelectScreen
+                user={user}
+                onSelectCharacter={handleSelectCharacter}
+                onUnlockCharacter={handleUnlockCharacter}
+                isProcessingId={isProcessingCharId}
+              />
+            </div>
           )}
 
           {activeTab === "ARMORY" && (
@@ -519,6 +541,41 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Mobile Floating Bottom Navigation Dock */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/90 px-3 py-1.5 flex items-center justify-around shadow-2xl safe-area-pb">
+        {[
+          { id: "QUESTS", label: "Quests", icon: Swords },
+          { id: "CHARACTER", label: "Heroes", icon: Sparkles },
+          { id: "ARMORY", label: "Armory", icon: Shield },
+          { id: "RADAR", label: "Stats", icon: Zap },
+          { id: "LOGS", label: "History", icon: ScrollText },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => {
+                sounds.playClick();
+                setActiveTab(tab.id as any);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition ${
+                isActive
+                  ? "text-cyan-400 font-bold"
+                  : "text-slate-500 hover:text-slate-300"
+              }`}
+            >
+              <Icon className={`w-5 h-5 transition-transform ${isActive ? "text-cyan-400 scale-110 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]" : "text-slate-400"}`} />
+              <span className="text-[10px] font-mono mt-0.5">{tab.label}</span>
+              {isActive && (
+                <span className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5 shadow-[0_0_6px_rgba(6,182,212,1)]" />
+              )}
+            </button>
+          );
+        })}
+      </nav>
+
       {/* Level Up Celebratory Modal */}
       <LevelUpModal
         isOpen={levelUpData.isOpen}
@@ -541,3 +598,4 @@ export default function Home() {
     </main>
   );
 }
+
