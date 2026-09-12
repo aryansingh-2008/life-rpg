@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { signToken, TOKEN_COOKIE_NAME } from "@/lib/auth";
 import { getRequiredXpForNextLevel, getRequiredGoldForLevelUp } from "@/lib/rpgEngine";
+import { updateUserStreakAuthoritative } from "@/lib/streakEngine";
 
 export async function POST() {
   try {
@@ -30,6 +31,8 @@ export async function POST() {
           mana: 60,
           maxMana: 60,
           streak: 5,
+          streakShields: 1,
+          lastShieldGrantedStreak: 0,
           strength: 18,
           intellect: 24,
           agility: 15,
@@ -54,6 +57,11 @@ export async function POST() {
       });
     }
 
+    // Evaluate authoritative streak and shields for demo user
+    const streakResult = await updateUserStreakAuthoritative(user.id);
+    const effectiveStreak = streakResult?.streak ?? user.streak;
+    const effectiveShields = streakResult?.streakShields ?? (user as any).streakShields ?? 1;
+
     const token = signToken({
       userId: user.id,
       email: user.email,
@@ -75,7 +83,9 @@ export async function POST() {
         maxHp: user.maxHp,
         mana: user.mana,
         maxMana: user.maxMana,
-        streak: user.streak,
+        streak: effectiveStreak,
+        streakShields: effectiveShields,
+        streakNotification: streakResult?.message ?? null,
         strength: user.strength,
         intellect: user.intellect,
         agility: user.agility,

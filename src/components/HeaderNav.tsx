@@ -8,6 +8,7 @@ import {
   VolumeX,
   LogOut,
   Sparkles,
+  Shield,
 } from "lucide-react";
 import { sounds } from "@/lib/soundEffects";
 import { getCharacterById } from "@/lib/charactersConfig";
@@ -23,6 +24,7 @@ interface UserProfile {
   mana: number;
   maxMana: number;
   streak: number;
+  streakShields?: number;
   title: string;
   characterId?: string;
   requiredGoldForLevelUp?: number;
@@ -160,6 +162,31 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-amber-500/30 text-xs font-mono font-bold text-amber-300">
             <Flame className="w-4 h-4 text-amber-500 animate-pulse" />
             <span>{user.streak}d Streak</span>
+          </div>
+
+          {/* Streak Protection Shields */}
+          <div
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition cursor-help ${
+              (user.streakShields ?? 0) > 0
+                ? "bg-indigo-950/40 border-indigo-500/40 text-indigo-300 shadow-sm shadow-indigo-500/10"
+                : "bg-slate-900/90 border-slate-800 text-slate-400"
+            }`}
+            title={`Streak Protection: ${user.streakShields ?? 0}/2 Shields active. 1 shield protects 1 missed day without breaking your streak. Earn 1 shield every 7 consecutive days (Max 2).`}
+          >
+            <Shield className={`w-4 h-4 ${(user.streakShields ?? 0) > 0 ? "text-indigo-400 fill-indigo-400/20" : "text-slate-500"}`} />
+            <span>{user.streakShields ?? 0}/2 Shields</span>
+            <div className="flex items-center gap-1 ml-0.5">
+              {[1, 2].map((slot) => (
+                <span
+                  key={slot}
+                  className={`inline-block w-2 h-2 rounded-full transition-all ${
+                    (user.streakShields ?? 0) >= slot
+                      ? "bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.9)]"
+                      : "bg-slate-800 border border-slate-700"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Desktop Sound & Logout */}

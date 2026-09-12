@@ -11,6 +11,7 @@ import {
   DifficultyType,
   AttributeType,
 } from "@/lib/rpgEngine";
+import { evaluateStreakOnLogin } from "@/lib/streakEngine";
 
 export async function POST(
   req: NextRequest,
@@ -55,21 +56,16 @@ export async function POST(
       });
     }
 
-    // 1. Calculate Streak logic based on last active date
+    // 1. Authoritative streak & streak shield evaluation
     const now = new Date();
-    const lastActive = new Date(user.lastActiveDate);
-    const diffHours = (now.getTime() - lastActive.getTime()) / (1000 * 60 * 60);
-
-    let newStreak = user.streak;
-    if (diffHours >= 20 && diffHours < 48) {
-      // Completed on next day -> increase streak
-      newStreak += 1;
-    } else if (diffHours >= 48) {
-      // Missed more than a day -> reset to 1
-      newStreak = 1;
-    } else if (newStreak === 0) {
-      newStreak = 1;
-    }
+    const streakEval = evaluateStreakOnLogin(
+      user.streak,
+      (user as any).streakShields ?? 0,
+      (user as any).lastShieldGrantedStreak ?? 0,
+      user.lastActiveDate,
+      now
+    );
+    const newStreak = streakEval.streak;
 
     // 2. Server-Authoritative Reward Calculation
     const rewards = calculateQuestRewards(
@@ -150,6 +146,8 @@ export async function POST(
           xp: progression.newXp,
           gold: totalPotentialGold + bossBonusGold - progression.goldCost,
           streak: newStreak,
+          streakShields: streakEval.streakShields,
+          lastShieldGrantedStreak: streakEval.lastShieldGrantedStreak,
           lastActiveDate: now,
           title: getPlayerTitle(progression.newLevel),
           unspentPoints: user.unspentPoints + progression.statPointsAwarded,
@@ -200,6 +198,8 @@ export async function POST(
       quest: updatedQuest,
       user: {
         ...updatedUser,
+        streakShields: updatedUser.streakShields,
+        streakNotification: streakEval.message,
         nextLevelXp: getRequiredXpForNextLevel(updatedUser.level),
         requiredGoldForLevelUp: getRequiredGoldForLevelUp(updatedUser.level),
         characterId: updatedUser.characterId || "aarav",

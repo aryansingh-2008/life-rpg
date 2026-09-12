@@ -14,7 +14,7 @@ import { AuthModal } from "@/components/AuthModal";
 import { LandingPage } from "@/components/LandingPage";
 import { AttributeType, DifficultyType, QuestType } from "@/lib/rpgEngine";
 import { sounds } from "@/lib/soundEffects";
-import { Loader2 } from "lucide-react";
+import { Loader2, Shield, X } from "lucide-react";
 
 export default function Home() {
   const [user, setUser] = useState<any | null>(null);
@@ -23,6 +23,9 @@ export default function Home() {
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"QUESTS" | "CHARACTER" | "ARMORY" | "RADAR" | "LOGS">("QUESTS");
+
+  // Streak notification state
+  const [streakNotice, setStreakNotice] = useState<string | null>(null);
 
   // Interactive feedback states
   const [isProcessingQuestId, setIsProcessingQuestId] = useState<string | null>(null);
@@ -58,6 +61,9 @@ export default function Home() {
       }
       const meData = await meRes.json();
       setUser(meData.user);
+      if (meData.user?.streakNotification) {
+        setStreakNotice(meData.user.streakNotification);
+      }
 
       const [questsRes, shopRes, logsRes] = await Promise.all([
         fetch("/api/quests"),
@@ -119,6 +125,9 @@ export default function Home() {
 
       // Update user state authoritatively
       setUser(data.user);
+      if (data.user?.streakNotification) {
+        setStreakNotice(data.user.streakNotification);
+      }
 
       // Check if user leveled up
       if (data.progression && data.progression.didLevelUp) {
@@ -360,6 +369,26 @@ export default function Home() {
         onAscend={handleAscend}
         isAscending={isAscending}
       />
+
+      {/* Streak Protection & Milestone Banner */}
+      {streakNotice && (
+        <div className="bg-gradient-to-r from-indigo-950/90 via-slate-900 to-indigo-950/90 border-b border-indigo-500/30 px-4 py-2.5 shadow-md shadow-indigo-950/40 animate-fadeIn">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5 text-xs font-mono font-bold text-indigo-200">
+              <Shield className="w-4 h-4 text-indigo-400 shrink-0 animate-pulse" />
+              <span>{streakNotice}</span>
+            </div>
+            <button
+              onClick={() => setStreakNotice(null)}
+              className="text-slate-400 hover:text-white text-xs font-mono px-2 py-0.5 rounded bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition flex items-center gap-1 shrink-0"
+              title="Dismiss notification"
+            >
+              <X className="w-3.5 h-3.5" />
+              <span>Dismiss</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto w-full px-4 pt-6 flex flex-col gap-6">
         {/* Top Hero Grid: 3D Hero Avatar + Boss Battle Arena */}

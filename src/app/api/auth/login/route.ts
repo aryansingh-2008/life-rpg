@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyPassword, signToken, TOKEN_COOKIE_NAME } from "@/lib/auth";
 import { getRequiredXpForNextLevel, getRequiredGoldForLevelUp } from "@/lib/rpgEngine";
+import { updateUserStreakAuthoritative } from "@/lib/streakEngine";
 
 export async function POST(req: NextRequest) {
   try {
@@ -50,6 +51,10 @@ export async function POST(req: NextRequest) {
       username: user.username,
     });
 
+    const streakResult = await updateUserStreakAuthoritative(user.id);
+    const effectiveStreak = streakResult?.streak ?? user.streak;
+    const effectiveShields = streakResult?.streakShields ?? user.streakShields ?? 0;
+
     const response = NextResponse.json({
       success: true,
       user: {
@@ -65,7 +70,9 @@ export async function POST(req: NextRequest) {
         maxHp: user.maxHp,
         mana: user.mana,
         maxMana: user.maxMana,
-        streak: user.streak,
+        streak: effectiveStreak,
+        streakShields: effectiveShields,
+        streakNotification: streakResult?.status !== "SAME_DAY" ? streakResult?.message : null,
         strength: user.strength,
         intellect: user.intellect,
         agility: user.agility,

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getRequiredXpForNextLevel, getRequiredGoldForLevelUp } from "@/lib/rpgEngine";
+import { updateUserStreakAuthoritative } from "@/lib/streakEngine";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Authoritatively evaluate streak and shield protection on daily load
+    const streakResult = await updateUserStreakAuthoritative(fullUser.id);
+    const effectiveStreak = streakResult?.streak ?? fullUser.streak;
+    const effectiveShields = streakResult?.streakShields ?? fullUser.streakShields ?? 0;
+
     const nextLevelXp = getRequiredXpForNextLevel(fullUser.level);
 
     return NextResponse.json({
@@ -46,7 +52,10 @@ export async function GET(req: NextRequest) {
         maxHp: fullUser.maxHp,
         mana: fullUser.mana,
         maxMana: fullUser.maxMana,
-        streak: fullUser.streak,
+        streak: effectiveStreak,
+        streakShields: effectiveShields,
+        streakNotification: streakResult?.status !== "SAME_DAY" ? streakResult?.message : null,
+        streakStatus: streakResult?.status ?? "SAME_DAY",
         strength: fullUser.strength,
         intellect: fullUser.intellect,
         agility: fullUser.agility,

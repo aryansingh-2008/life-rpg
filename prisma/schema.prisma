@@ -22,6 +22,8 @@ model User {
   mana            Int             @default(50)
   maxMana         Int             @default(50)
   streak          Int             @default(1)
+  streakShields   Int             @default(0) // Max 2 streak protection shields
+  lastShieldGrantedStreak Int     @default(0) // Tracks every 7 days milestone
   lastActiveDate  DateTime        @default(now())
   unspentPoints   Int             @default(0)
   strength        Int             @default(10)
