@@ -17,6 +17,9 @@ export interface HeroArchetype {
   trimColor: number;
   emissiveColor: number;
   meshType:
+    | "spiderman"
+    | "ironman"
+    | "batman"
     | "knight"
     | "shinobi"
     | "paladin"
@@ -28,18 +31,54 @@ export interface HeroArchetype {
     | "valkyrie"
     | "alchemist"
     | "mechatitan"
-    | "monk"
-    | "frostwarden"
-    | "pyromancer"
-    | "cosmic";
+    | "frostwarden";
 }
 
 export const HERO_ROSTER: HeroArchetype[] = [
   {
+    id: "spiderman",
+    name: "Spider-Man (Cyber Web-Slinger)",
+    badge: "Marvel Icon",
+    element: "Spider-Sense & Webbing",
+    stats: "+25 Agility & Reflex",
+    colorHex: "#ef4444",
+    primaryColor: 0xd90429,      // Iconic Spider Crimson Red
+    secondaryColor: 0x0077b6,    // Electric Cobalt Blue
+    trimColor: 0x111827,         // Black Web Insignia & Outlines
+    emissiveColor: 0xffffff,     // Glowing White Spider Lenses & Webbing
+    meshType: "spiderman",
+  },
+  {
+    id: "ironman",
+    name: "Iron Vanguard (Iron Man)",
+    badge: "Armored Avenger",
+    element: "Arc Reactor Unibeam",
+    stats: "+24 Intellect & Tech",
+    colorHex: "#f59e0b",
+    primaryColor: 0x991b1b,      // Hot-Rod Red
+    secondaryColor: 0xd97706,    // Polished Gold Titanium
+    trimColor: 0xfde047,         // Radiant Gold Trims
+    emissiveColor: 0x00f2ff,     // Glowing Cyan Arc Reactor & Repulsors
+    meshType: "ironman",
+  },
+  {
+    id: "batman",
+    name: "Dark Knight (Batman)",
+    badge: "Shadow Vigilante",
+    element: "Stealth & Discipline",
+    stats: "+22 Spirit & Tactics",
+    colorHex: "#facc15",
+    primaryColor: 0x09090b,      // Tactical Carbon Black
+    secondaryColor: 0x27272a,    // Kevlar Slate
+    trimColor: 0xeab308,         // Gold Tech Utility Belt
+    emissiveColor: 0xfef08a,     // White Slit Lenses & Emblem
+    meshType: "batman",
+  },
+  {
     id: "cyber_knight",
     name: "Cyber Knight",
     badge: "Vanguard",
-    element: "Plasma",
+    element: "Plasma Blade",
     stats: "+15 Strength",
     colorHex: "#00f2ff",
     primaryColor: 0xe2e8f0,
@@ -65,7 +104,7 @@ export const HERO_ROSTER: HeroArchetype[] = [
     id: "solar_paladin",
     name: "Solar Paladin",
     badge: "Radiant",
-    element: "Solar",
+    element: "Solar Ray",
     stats: "+16 Vitality",
     colorHex: "#f59e0b",
     primaryColor: 0xfef08a,
@@ -179,19 +218,6 @@ export const HERO_ROSTER: HeroArchetype[] = [
     meshType: "mechatitan",
   },
   {
-    id: "astral_monk",
-    name: "Astral Monk",
-    badge: "Mystic",
-    element: "Chi Power",
-    stats: "+18 Spirit",
-    colorHex: "#818cf8",
-    primaryColor: 0x1e1b4b,
-    secondaryColor: 0x3730a3,
-    trimColor: 0x818cf8,
-    emissiveColor: 0xa5b4fc,
-    meshType: "monk",
-  },
-  {
     id: "frost_warden",
     name: "Frost Warden",
     badge: "Glacial",
@@ -203,32 +229,6 @@ export const HERO_ROSTER: HeroArchetype[] = [
     trimColor: 0xa5f3fc,
     emissiveColor: 0x22d3ee,
     meshType: "frostwarden",
-  },
-  {
-    id: "inferno_pyromancer",
-    name: "Inferno Pyromancer",
-    badge: "Lava Mage",
-    element: "Magma Flame",
-    stats: "+17 Intellect",
-    colorHex: "#f97316",
-    primaryColor: 0x1c1917,
-    secondaryColor: 0x7c2d12,
-    trimColor: 0xf97316,
-    emissiveColor: 0xfb923c,
-    meshType: "pyromancer",
-  },
-  {
-    id: "cosmic_sovereign",
-    name: "Cosmic Sovereign",
-    badge: "Ascendant God",
-    element: "Cosmos",
-    stats: "+25 All Stats",
-    colorHex: "#f472b6",
-    primaryColor: 0xfdf2f8,
-    secondaryColor: 0x831843,
-    trimColor: 0xf472b6,
-    emissiveColor: 0xfbcfe8,
-    meshType: "cosmic",
   },
 ];
 
@@ -254,7 +254,6 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
   const [selectedHeroIndex, setSelectedHeroIndex] = useState(0);
   const activeHero = HERO_ROSTER[selectedHeroIndex] || HERO_ROSTER[0];
 
-  // Derive which gear slots are active
   const activeVisualKeys = new Set(
     equippedItems.map((entry) => entry.item.visualKey).filter(Boolean)
   );
@@ -281,15 +280,12 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
     const width = container.clientWidth || 360;
     const height = container.clientHeight || 380;
 
-    // 1. Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // 2. Camera setup
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(0, 1.25, 5.2);
 
-    // 3. Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -301,11 +297,11 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
     }
     container.appendChild(renderer.domElement);
 
-    // 4. Dynamic Lighting tuned to current Hero
+    // Studio Lighting
     const ambientLight = new THREE.AmbientLight(0x94a3b8, 2.5);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 3.8);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 4.0);
     keyLight.position.set(4, 7, 5);
     scene.add(keyLight);
 
@@ -321,30 +317,29 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
     underGlow.position.set(0, -0.8, 0.5);
     scene.add(underGlow);
 
-    // 5. Hero Root Group
     const heroGroup = new THREE.Group();
     scene.add(heroGroup);
 
-    // === Dynamic Materials Based on Hero Archetype ===
+    // Materials
     const primaryMat = new THREE.MeshStandardMaterial({
       color: activeHero.primaryColor,
-      metalness: activeHero.meshType === "shinobi" ? 0.3 : 0.85,
-      roughness: 0.2,
+      metalness: activeHero.meshType === "spiderman" || activeHero.meshType === "batman" ? 0.25 : 0.85,
+      roughness: activeHero.meshType === "spiderman" ? 0.4 : 0.2,
     });
 
     const secondaryMat = new THREE.MeshStandardMaterial({
       color: activeHero.secondaryColor,
       emissive: activeHero.secondaryColor,
-      emissiveIntensity: 0.35,
-      metalness: 0.7,
-      roughness: 0.25,
+      emissiveIntensity: activeHero.meshType === "spiderman" ? 0.1 : 0.35,
+      metalness: activeHero.meshType === "spiderman" ? 0.3 : 0.7,
+      roughness: 0.3,
     });
 
     const trimMat = new THREE.MeshStandardMaterial({
       color: activeHero.trimColor,
       emissive: activeHero.trimColor,
-      emissiveIntensity: 0.5,
-      metalness: 0.9,
+      emissiveIntensity: 0.4,
+      metalness: 0.8,
       roughness: 0.2,
     });
 
@@ -355,63 +350,179 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
       roughness: 0.1,
     });
 
-    // --- BODY ARCHITECTURE (Archetype Variations) ---
+    const isSpiderman = activeHero.meshType === "spiderman";
+    const isIronman = activeHero.meshType === "ironman";
+    const isBatman = activeHero.meshType === "batman";
     const isMecha = activeHero.meshType === "mechatitan";
     const isBerserker = activeHero.meshType === "berserker";
+
     const torsoScaleX = isMecha ? 1.15 : isBerserker ? 1.05 : 0.88;
 
-    // Torso Base
+    // --- TORSO CONSTRUCTION ---
     const torsoGeo = new THREE.BoxGeometry(torsoScaleX, 1.05, 0.52);
-    const torsoMesh = new THREE.Mesh(torsoGeo, secondaryMat);
+    const torsoMesh = new THREE.Mesh(torsoGeo, isSpiderman ? secondaryMat : secondaryMat);
     torsoMesh.position.y = 1.05;
     heroGroup.add(torsoMesh);
 
-    // Breastplate Armor
+    // Breastplate / Vest
     const chestPlateGeo = new THREE.BoxGeometry(torsoScaleX * 0.9, 0.55, 0.16);
     const chestPlate = new THREE.Mesh(chestPlateGeo, primaryMat);
     chestPlate.position.set(0, 1.22, 0.24);
     heroGroup.add(chestPlate);
 
-    // Golden / Elemental Chest Trim
-    const chestTrimGeo = new THREE.BoxGeometry(torsoScaleX * 0.95, 0.08, 0.18);
-    const chestTrim = new THREE.Mesh(chestTrimGeo, trimMat);
-    chestTrim.position.set(0, 1.45, 0.25);
-    heroGroup.add(chestTrim);
+    if (isSpiderman) {
+      // SPIDER-MAN: Iconic Black Spider Chest Emblem
+      const spiderBody = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.16, 0.05), trimMat);
+      spiderBody.position.set(0, 1.22, 0.33);
+      heroGroup.add(spiderBody);
 
-    // Glowing Arc Core / Emblem
-    const coreGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.12, 24);
-    coreGeo.rotateX(Math.PI / 2);
-    const coreMesh = new THREE.Mesh(coreGeo, emissiveGlowMat);
-    coreMesh.position.set(0, 1.15, 0.3);
-    heroGroup.add(coreMesh);
+      // Spider legs on chest
+      const legLeft1 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.04), trimMat);
+      legLeft1.position.set(-0.12, 1.28, 0.33);
+      legLeft1.rotation.z = 0.35;
+      heroGroup.add(legLeft1);
 
-    // Belt
-    const beltGeo = new THREE.BoxGeometry(torsoScaleX * 1.05, 0.14, 0.56);
-    const beltMesh = new THREE.Mesh(beltGeo, trimMat);
-    beltMesh.position.set(0, 0.58, 0);
-    heroGroup.add(beltMesh);
+      const legRight1 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.04), trimMat);
+      legRight1.position.set(0.12, 1.28, 0.33);
+      legRight1.rotation.z = -0.35;
+      heroGroup.add(legRight1);
 
-    // --- HEAD ARCHITECTURE (Unique 15-Hero Headgear) ---
+      const legLeft2 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.04), trimMat);
+      legLeft2.position.set(-0.12, 1.16, 0.33);
+      legLeft2.rotation.z = -0.35;
+      heroGroup.add(legLeft2);
+
+      const legRight2 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.04), trimMat);
+      legRight2.position.set(0.12, 1.16, 0.33);
+      legRight2.rotation.z = 0.35;
+      heroGroup.add(legRight2);
+
+      // Blue side panels for classic red-and-blue suit
+      const leftRib = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.9, 0.54), secondaryMat);
+      leftRib.position.set(-0.4, 1.05, 0);
+      heroGroup.add(leftRib);
+
+      const rightRib = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.9, 0.54), secondaryMat);
+      rightRib.position.set(0.4, 1.05, 0);
+      heroGroup.add(rightRib);
+    } else if (isIronman) {
+      // IRON MAN: Glowing Cyan Unibeam Arc Reactor Core
+      const arcRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.16, 0.03, 16, 32),
+        trimMat
+      );
+      arcRing.position.set(0, 1.22, 0.33);
+      heroGroup.add(arcRing);
+
+      const arcCore = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.14, 0.14, 0.08, 24),
+        emissiveGlowMat
+      );
+      arcCore.rotateX(Math.PI / 2);
+      arcCore.position.set(0, 1.22, 0.33);
+      heroGroup.add(arcCore);
+    } else if (isBatman) {
+      // BATMAN: Dark Bat Chest Emblem
+      const batLogo = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.14, 0.05), trimMat);
+      batLogo.position.set(0, 1.25, 0.33);
+      heroGroup.add(batLogo);
+
+      // Golden Tech Utility Belt with compartments
+      const utilityBelt = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.16, 0.58), trimMat);
+      utilityBelt.position.set(0, 0.58, 0);
+      heroGroup.add(utilityBelt);
+
+      // Batman Flowing Scalloped Cape (Back)
+      const capeGeo = new THREE.BoxGeometry(0.9, 1.4, 0.05);
+      const capeMesh = new THREE.Mesh(capeGeo, primaryMat);
+      capeMesh.position.set(0, 0.9, -0.3);
+      heroGroup.add(capeMesh);
+    } else {
+      // Default Arc Core & Belt
+      const coreGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.12, 24);
+      coreGeo.rotateX(Math.PI / 2);
+      const coreMesh = new THREE.Mesh(coreGeo, emissiveGlowMat);
+      coreMesh.position.set(0, 1.15, 0.3);
+      heroGroup.add(coreMesh);
+
+      const beltGeo = new THREE.BoxGeometry(torsoScaleX * 1.05, 0.14, 0.56);
+      const beltMesh = new THREE.Mesh(beltGeo, trimMat);
+      beltMesh.position.set(0, 0.58, 0);
+      heroGroup.add(beltMesh);
+    }
+
+    // --- HEAD & MASK ARCHITECTURE ---
     const headGeo = new THREE.BoxGeometry(0.56, 0.58, 0.56);
     const headMesh = new THREE.Mesh(headGeo, primaryMat);
     headMesh.position.y = 1.88;
     heroGroup.add(headMesh);
 
-    // Glowing Visor / Eyes
-    const visorGeo = new THREE.BoxGeometry(0.5, 0.16, 0.22);
-    const visorMesh = new THREE.Mesh(visorGeo, emissiveGlowMat);
-    visorMesh.position.set(0, 1.88, 0.25);
-    heroGroup.add(visorMesh);
+    if (isSpiderman) {
+      // SPIDER-MAN: Iconic Angular White Spider Lenses with Bold Black Borders
+      // Left Eye Outer Black Border
+      const leftEyeBorder = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.22, 0.05), trimMat);
+      leftEyeBorder.position.set(-0.14, 1.88, 0.28);
+      leftEyeBorder.rotation.z = -0.22;
+      heroGroup.add(leftEyeBorder);
 
-    // --- UNIQUE ARCHETYPE ACCESSORIES ---
+      // Left Eye Glowing White Lens
+      const leftLens = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.17, 0.06), emissiveGlowMat);
+      leftLens.position.set(-0.14, 1.88, 0.29);
+      leftLens.rotation.z = -0.22;
+      heroGroup.add(leftLens);
 
-    // 1. Knight & Berserker & Valkyrie: Top Crest / Horns
+      // Right Eye Outer Black Border
+      const rightEyeBorder = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.22, 0.05), trimMat);
+      rightEyeBorder.position.set(0.14, 1.88, 0.28);
+      rightEyeBorder.rotation.z = 0.22;
+      heroGroup.add(rightEyeBorder);
+
+      // Right Eye Glowing White Lens
+      const rightLens = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.17, 0.06), emissiveGlowMat);
+      rightLens.position.set(0.14, 1.88, 0.29);
+      rightLens.rotation.z = 0.22;
+      heroGroup.add(rightLens);
+    } else if (isIronman) {
+      // IRON MAN: Gold Faceplate & Glowing Slit Eyes
+      const facePlate = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.44, 0.08), trimMat);
+      facePlate.position.set(0, 1.84, 0.26);
+      heroGroup.add(facePlate);
+
+      const leftEyeSlit = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 0.1), emissiveGlowMat);
+      leftEyeSlit.position.set(-0.11, 1.88, 0.3);
+      heroGroup.add(leftEyeSlit);
+
+      const rightEyeSlit = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 0.1), emissiveGlowMat);
+      rightEyeSlit.position.set(0.11, 1.88, 0.3);
+      heroGroup.add(rightEyeSlit);
+    } else if (isBatman) {
+      // BATMAN: Pointed Bat Ears & Glowing Slit Lenses
+      const earGeo = new THREE.ConeGeometry(0.06, 0.35, 4);
+      const leftEar = new THREE.Mesh(earGeo, primaryMat);
+      leftEar.position.set(-0.24, 2.3, 0);
+      heroGroup.add(leftEar);
+
+      const rightEar = new THREE.Mesh(earGeo, primaryMat);
+      rightEar.position.set(0.24, 2.3, 0);
+      heroGroup.add(rightEar);
+
+      const batVisor = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.08, 0.12), emissiveGlowMat);
+      batVisor.position.set(0, 1.9, 0.26);
+      heroGroup.add(batVisor);
+    } else {
+      // Default Cyber Visor
+      const visorGeo = new THREE.BoxGeometry(0.5, 0.16, 0.22);
+      const visorMesh = new THREE.Mesh(visorGeo, emissiveGlowMat);
+      visorMesh.position.set(0, 1.88, 0.25);
+      heroGroup.add(visorMesh);
+    }
+
+    // Other archetype head accessories
     if (activeHero.meshType === "knight" || activeHero.meshType === "paladin") {
       const crestMesh = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.26, 0.62), trimMat);
       crestMesh.position.set(0, 2.24, 0);
       heroGroup.add(crestMesh);
     } else if (activeHero.meshType === "voidwalker" || activeHero.meshType === "berserker") {
-      // Twin Demon / War Horns
       const hornGeo = new THREE.ConeGeometry(0.08, 0.45, 8);
       const leftHorn = new THREE.Mesh(hornGeo, emissiveGlowMat);
       leftHorn.position.set(-0.35, 2.3, 0);
@@ -423,120 +534,100 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
       rightHorn.rotation.z = -0.4;
       heroGroup.add(rightHorn);
     } else if (activeHero.meshType === "ronin") {
-      // Cyber Samurai Kasa (Conical Hat)
       const kasaGeo = new THREE.ConeGeometry(0.75, 0.22, 16);
       const kasaMesh = new THREE.Mesh(kasaGeo, primaryMat);
       kasaMesh.position.set(0, 2.22, 0);
       heroGroup.add(kasaMesh);
-    } else if (activeHero.meshType === "chronomancer") {
-      // Rotating Temporal Clock Rings
-      const ringTorus = new THREE.TorusGeometry(0.5, 0.03, 16, 32);
-      const timeRing = new THREE.Mesh(ringTorus, emissiveGlowMat);
-      timeRing.position.set(0, 1.9, 0);
-      timeRing.rotation.x = Math.PI / 3;
-      heroGroup.add(timeRing);
-    } else if (activeHero.meshType === "alchemist") {
-      // Twin Brass Goggles
-      const goggleGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.18, 16);
-      goggleGeo.rotateX(Math.PI / 2);
-      const leftGog = new THREE.Mesh(goggleGeo, trimMat);
-      leftGog.position.set(-0.16, 1.9, 0.32);
-      heroGroup.add(leftGog);
-
-      const rightGog = new THREE.Mesh(goggleGeo, trimMat);
-      rightGog.position.set(0.16, 1.9, 0.32);
-      heroGroup.add(rightGog);
-    } else if (activeHero.meshType === "monk") {
-      // 6 Floating Orbiting Chi Prayer Orbs
-      for (let m = 0; m < 6; m++) {
-        const orbMesh = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), emissiveGlowMat);
-        const ang = (m * Math.PI * 2) / 6;
-        orbMesh.position.set(Math.cos(ang) * 0.7, 1.15 + Math.sin(ang) * 0.3, Math.sin(ang) * 0.7);
-        heroGroup.add(orbMesh);
-      }
-    } else if (activeHero.meshType === "frostwarden") {
-      // Glacial Crystal Shoulder Spikes
-      const spikeGeo = new THREE.ConeGeometry(0.1, 0.5, 6);
-      const leftSpike = new THREE.Mesh(spikeGeo, emissiveGlowMat);
-      leftSpike.position.set(-0.85, 1.8, 0);
-      leftSpike.rotation.z = 0.6;
-      heroGroup.add(leftSpike);
-
-      const rightSpike = new THREE.Mesh(spikeGeo, emissiveGlowMat);
-      rightSpike.position.set(0.85, 1.8, 0);
-      rightSpike.rotation.z = -0.6;
-      heroGroup.add(rightSpike);
-    } else if (activeHero.meshType === "cosmic") {
-      // Celestial Floating Sun / Starlight Halo
-      const haloGeo = new THREE.TorusGeometry(0.44, 0.04, 16, 32);
-      const haloMesh = new THREE.Mesh(haloGeo, emissiveGlowMat);
-      haloMesh.position.set(0, 2.38, 0);
-      haloMesh.rotation.x = Math.PI / 2;
-      heroGroup.add(haloMesh);
     }
 
     // --- SHOULDERS & ARMS ---
-    const shoulderScale = isMecha ? 0.58 : 0.44;
+    const shoulderScale = isMecha ? 0.58 : isSpiderman ? 0.36 : 0.44;
     const shoulderGeo = new THREE.BoxGeometry(shoulderScale, shoulderScale, shoulderScale);
-    const leftShoulder = new THREE.Mesh(shoulderGeo, primaryMat);
-    leftShoulder.position.set(-(torsoScaleX * 0.5 + 0.3), 1.44, 0);
+    const leftShoulder = new THREE.Mesh(shoulderGeo, isSpiderman ? primaryMat : primaryMat);
+    leftShoulder.position.set(-(torsoScaleX * 0.5 + 0.26), 1.44, 0);
     heroGroup.add(leftShoulder);
 
-    const rightShoulder = new THREE.Mesh(shoulderGeo, primaryMat);
-    rightShoulder.position.set(torsoScaleX * 0.5 + 0.3, 1.44, 0);
+    const rightShoulder = new THREE.Mesh(shoulderGeo, isSpiderman ? primaryMat : primaryMat);
+    rightShoulder.position.set(torsoScaleX * 0.5 + 0.26, 1.44, 0);
     heroGroup.add(rightShoulder);
-
-    // Mecha Cannon Pods on Shoulders
-    if (isMecha) {
-      const cannonGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.6, 12);
-      cannonGeo.rotateX(Math.PI / 2);
-      const leftCannon = new THREE.Mesh(cannonGeo, trimMat);
-      leftCannon.position.set(-(torsoScaleX * 0.5 + 0.3), 1.75, 0.1);
-      heroGroup.add(leftCannon);
-
-      const rightCannon = new THREE.Mesh(cannonGeo, trimMat);
-      rightCannon.position.set(torsoScaleX * 0.5 + 0.3, 1.75, 0.1);
-      heroGroup.add(rightCannon);
-    }
 
     // Arms
     const armGeo = new THREE.BoxGeometry(0.26, 0.76, 0.28);
-    const leftArm = new THREE.Mesh(armGeo, primaryMat);
-    leftArm.position.set(-(torsoScaleX * 0.5 + 0.3), 0.88, 0);
+    const leftArm = new THREE.Mesh(armGeo, isSpiderman ? secondaryMat : primaryMat);
+    leftArm.position.set(-(torsoScaleX * 0.5 + 0.26), 0.88, 0);
     heroGroup.add(leftArm);
 
-    const rightArm = new THREE.Mesh(armGeo, primaryMat);
-    rightArm.position.set(torsoScaleX * 0.5 + 0.3, 0.88, 0);
+    const rightArm = new THREE.Mesh(armGeo, isSpiderman ? secondaryMat : primaryMat);
+    rightArm.position.set(torsoScaleX * 0.5 + 0.26, 0.88, 0);
     heroGroup.add(rightArm);
 
-    // Forearm Cyber Glow Lines
-    const leftStripe = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.5, 0.3), emissiveGlowMat);
-    leftStripe.position.set(-(torsoScaleX * 0.5 + 0.44), 0.88, 0);
-    heroGroup.add(leftStripe);
+    if (isSpiderman) {
+      // SPIDER-MAN: Red Forearm Gauntlets & Wrist Web-Shooters
+      const leftGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.38, 0.3), primaryMat);
+      leftGauntlet.position.set(-(torsoScaleX * 0.5 + 0.26), 0.72, 0);
+      heroGroup.add(leftGauntlet);
 
-    const rightStripe = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.5, 0.3), emissiveGlowMat);
-    rightStripe.position.set(torsoScaleX * 0.5 + 0.44, 0.88, 0);
-    heroGroup.add(rightStripe);
+      const rightGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.38, 0.3), primaryMat);
+      rightGauntlet.position.set(torsoScaleX * 0.5 + 0.26, 0.72, 0);
+      heroGroup.add(rightGauntlet);
+
+      // Silver Web-Shooter Nozzles on Wrists
+      const leftWebShooter = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.04, 0.04, 0.08, 12),
+        emissiveGlowMat
+      );
+      leftWebShooter.rotateX(Math.PI / 2);
+      leftWebShooter.position.set(-(torsoScaleX * 0.5 + 0.26), 0.6, 0.16);
+      heroGroup.add(leftWebShooter);
+
+      const rightWebShooter = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.04, 0.04, 0.08, 12),
+        emissiveGlowMat
+      );
+      rightWebShooter.rotateX(Math.PI / 2);
+      rightWebShooter.position.set(torsoScaleX * 0.5 + 0.26, 0.6, 0.16);
+      heroGroup.add(rightWebShooter);
+    } else if (isIronman) {
+      // Palm Repulsor Node
+      const leftRepulsor = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.05, 0.05, 0.04, 16),
+        emissiveGlowMat
+      );
+      leftRepulsor.rotateX(Math.PI / 2);
+      leftRepulsor.position.set(-(torsoScaleX * 0.5 + 0.26), 0.56, 0.15);
+      heroGroup.add(leftRepulsor);
+
+      const rightRepulsor = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.05, 0.05, 0.04, 16),
+        emissiveGlowMat
+      );
+      rightRepulsor.rotateX(Math.PI / 2);
+      rightWebShooter: rightRepulsor.position.set(torsoScaleX * 0.5 + 0.26, 0.56, 0.15);
+      heroGroup.add(rightRepulsor);
+    }
 
     // --- LEGS ---
     const legGeo = new THREE.BoxGeometry(0.32, 0.98, 0.34);
-    const leftLeg = new THREE.Mesh(legGeo, primaryMat);
+    const leftLeg = new THREE.Mesh(legGeo, isSpiderman ? secondaryMat : primaryMat);
     leftLeg.position.set(-0.26, 0.05, 0);
     heroGroup.add(leftLeg);
 
-    const leftKnee = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.2, 0.14), trimMat);
-    leftKnee.position.set(-0.26, 0.15, 0.18);
-    heroGroup.add(leftKnee);
-
-    const rightLeg = new THREE.Mesh(legGeo, primaryMat);
+    const rightLeg = new THREE.Mesh(legGeo, isSpiderman ? secondaryMat : primaryMat);
     rightLeg.position.set(0.26, 0.05, 0);
     heroGroup.add(rightLeg);
 
-    const rightKnee = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.2, 0.14), trimMat);
-    rightKnee.position.set(0.26, 0.15, 0.18);
-    heroGroup.add(rightKnee);
+    if (isSpiderman) {
+      // Red Spider Boots
+      const leftBoot = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.44, 0.36), primaryMat);
+      leftBoot.position.set(-0.26, -0.22, 0.02);
+      heroGroup.add(leftBoot);
 
-    // --- DYNAMIC EQUIPMENT (WEAPONS, WINGS, SHIELDS) ---
+      const rightBoot = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.44, 0.36), primaryMat);
+      rightBoot.position.set(0.26, -0.22, 0.02);
+      heroGroup.add(rightBoot);
+    }
+
+    // --- DYNAMIC EQUIPMENT ---
     if (hasWeapon) {
       const weaponBladeColor = isEpicWeapon ? 0xfbbf24 : activeHero.emissiveColor;
       const bladeMat = new THREE.MeshStandardMaterial({
@@ -609,7 +700,7 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
       heroGroup.add(leftWing);
     }
 
-    // --- Floating Particles matching Elemental Color ---
+    // --- Floating Web / Particle Systems ---
     const particleCount = Math.min(80, 35 + level * 6);
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
@@ -625,7 +716,7 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
 
     const particleMat = new THREE.PointsMaterial({
       color: activeHero.emissiveColor,
-      size: 0.07,
+      size: isSpiderman ? 0.05 : 0.07,
       transparent: true,
       opacity: 0.85,
       blending: THREE.AdditiveBlending,
@@ -633,7 +724,7 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
     const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    // --- Hologram Platform ---
+    // --- Pedestal Platform ---
     const ringGeo = new THREE.RingGeometry(0.9, 1.5, 32);
     ringGeo.rotateX(-Math.PI / 2);
     const ringMat = new THREE.MeshBasicMaterial({
@@ -647,7 +738,7 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
     ringMesh.position.y = -0.5;
     scene.add(ringMesh);
 
-    // --- Interaction / Mouse Drag ---
+    // Mouse Drag Rotation
     const handleMouseDown = (e: MouseEvent) => {
       isDraggingRef.current = true;
       prevMouseXRef.current = e.clientX;
@@ -667,7 +758,6 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
 
-    // Touch support
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 1) {
         isDraggingRef.current = true;
@@ -687,7 +777,6 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
     window.addEventListener("touchmove", handleTouchMove);
     window.addEventListener("touchend", handleTouchEnd);
 
-    // --- Animation Loop ---
     let animId: number;
     const clock = new THREE.Clock();
 
@@ -695,7 +784,6 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
       animId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Idle floating
       heroGroup.position.y = Math.sin(elapsedTime * 2) * 0.08;
 
       if (!isDraggingRef.current) {
@@ -792,21 +880,21 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
         </div>
       </div>
 
-      {/* 15 3D HEROES SELECTION CAROUSEL / SELECTOR */}
+      {/* HEROES SELECTION CAROUSEL */}
       <div className="flex flex-col gap-2 p-3 rounded-2xl bg-slate-900/70 border border-slate-800/80 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-cyan-400" />
             <span className="text-xs font-mono font-black tracking-wider text-slate-200 uppercase">
-              15 3D HERO ARCHETYPES ({selectedHeroIndex + 1}/15)
+              SELECT HERO ({selectedHeroIndex + 1}/{HERO_ROSTER.length})
             </span>
           </div>
           <span className="text-[10px] font-mono text-cyan-400 font-bold">
-            Select to switch 3D model
+            Tap hero to equip in 3D
           </span>
         </div>
 
-        {/* Horizontal Scrollable 15 Hero Cards */}
+        {/* Horizontal Scrollable Hero Cards */}
         <div className="flex items-center gap-2 overflow-x-auto py-1 pr-2 scrollbar-thin">
           {HERO_ROSTER.map((hero, idx) => {
             const isSelected = selectedHeroIndex === idx;
@@ -822,7 +910,7 @@ export const Hero3DCanvas: React.FC<Hero3DCanvasProps> = ({ level, equippedItems
                     ? "bg-slate-800 border-cyan-400 shadow-lg shadow-cyan-500/20 scale-105"
                     : "bg-slate-950/70 border-slate-800 hover:border-slate-700 hover:bg-slate-900"
                 }`}
-                style={{ width: "125px" }}
+                style={{ width: "135px" }}
               >
                 <div className="flex items-center justify-between w-full mb-1">
                   <span
