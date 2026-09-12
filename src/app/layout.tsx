@@ -24,7 +24,9 @@ export const metadata: Metadata = {
     "Gamified Tasks",
     "3D Progression",
   ],
-  authors: [{ name: "Aetheria Development Team" }],
+  authors: [{ name: "Aryan Singh", url: "https://github.com/aryansingh-2008" }],
+  creator: "Aryan Singh",
+  publisher: "Aryan Singh",
 };
 
 export const viewport: Viewport = {

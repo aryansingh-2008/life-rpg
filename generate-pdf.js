@@ -78,7 +78,7 @@ function createManual() {
   doc.rect(0, 0, 595.28, 120).fill(colors.dark);
   doc.fillColor(colors.primary).fontSize(26).font("Helvetica-Bold").text("AETHERIA // LIFE RPG", 45, 35, { tracking: 2 });
   doc.fillColor("#e2e8f0").fontSize(12).font("Helvetica").text("Official User Manual & Operator Handbook", 45, 68);
-  doc.fillColor(colors.accent).fontSize(9).font("Helvetica-Bold").text("VERSION 1.0 • HACKATHON EDITION • FULLSTACK 3D PROGRESSION", 45, 88);
+  doc.fillColor(colors.accent).fontSize(9).font("Helvetica-Bold").text("VERSION 1.0 • PRODUCTION RELEASE • FULLSTACK 3D PROGRESSION", 45, 88);
 
   doc.y = 140;
 
@@ -97,8 +97,8 @@ function createManual() {
   addBullet("3. Open Browser", "Visit http://localhost:3000 in Chrome, Edge, or Firefox");
 
   addCalloutBox(
-    "⚡ 1-Click Judge Demo Login (Zero-Setup Evaluation)",
-    "Judges can skip manual registration by clicking '1-CLICK DEMO CHARACTER LOGIN' on the landing screen. You will immediately enter as CyberKnight_Alex (Level 3 Aether Initiate) with preloaded quests, an equipped Cyber Katana, 318 Gold, and an active Boss Raid."
+    "⚡ Instant Guest Demo Mode (Zero-Setup Evaluation)",
+    "Users and evaluators can skip manual registration by clicking 'TRY INSTANT DEMO' on the landing screen. You will immediately enter as Aarav (Level 3 The Wanderer) with preloaded quests, an equipped Cyber Katana, Coins, and an active Boss Raid."
   );
 
   doc.moveDown(0.5);
@@ -136,7 +136,7 @@ function createManual() {
   addSectionTitle("Quest Types Explained");
   addBullet("Daily Rituals (DAILY)", "Recurring daily commitments (e.g., 'Morning Workout', 'Study Next.js'). Reset daily to build rock-solid routines.");
   addBullet("Repeatable Habits (HABIT)", "Habits you can complete multiple times a day (e.g., 'Drink 500ml Water', '15-min Meditation').");
-  addBullet("One-Time Bounties (BOUNTY)", "Single-instance tasks with large payouts (e.g., 'Clean Desk & Cable Management', 'Submit Hackathon Project').");
+  addBullet("One-Time Bounties (BOUNTY)", "Single-instance tasks with large payouts (e.g., 'Clean Desk & Cable Management', 'Submit Production Milestone').");
 
   addSectionTitle("How to Forge a New Quest");
   addBullet("Step 1", "Click the '+ NEW QUEST' button (or press the 'N' shortcut key on your keyboard).");
@@ -203,7 +203,7 @@ function createManual() {
 
   addHeader("8. Database Persistence & Audit Chronicles", "Proving Real Data Integrity");
   addParagraph(
-    "To satisfy the hackathon's strict Zero-Tolerance rule against fake localStorage persistence, Aetheria persists all state in a relational database via Prisma ORM."
+    "To satisfy the strict Zero-Tolerance architecture against fake localStorage persistence, Aetheria persists all state in a relational database via Prisma ORM."
   );
   addBullet("Historical Audit Chronicles", "Click the 'Historical Audit Chronicles' tab to inspect every quest completed, with exact timestamps, XP, and gold earned stored permanently in the database.");
   addBullet("F5 Page Refresh Test", "Press F5 or reload the browser at any time. All user levels, equipment, equipped 3D meshes, quests, and audit logs remain completely persistent!");

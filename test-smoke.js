@@ -41,7 +41,7 @@ async function runHealthCheck() {
 
   // 3. Test JWT & Auth Security
   console.log("\n[3/6] Testing Cryptographic & JWT Security...");
-  const sampleSecret = "aetheria-super-secret-jwt-key-for-hackathon-2026-rpg-security";
+  const sampleSecret = "aetheria-super-secret-jwt-key-for-production-rpg-security";
   const token = jwt.sign({ userId: demoUser.id, email: demoUser.email }, sampleSecret, { expiresIn: "1h" });
   const decoded = jwt.verify(token, sampleSecret);
   if (decoded.userId !== demoUser.id) throw new Error("JWT token verification failed");

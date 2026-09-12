@@ -152,7 +152,7 @@ async function main() {
     }
   }
 
-  // Create or update default demo user for instant judge evaluation
+  // Create or update default demo user for instant guest evaluation
   const demoEmail = "hero@aetheria.rpg";
   const existingUser = await prisma.user.findUnique({
     where: { email: demoEmail },

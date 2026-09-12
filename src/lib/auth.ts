@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import prisma from "./prisma";
 
-const JWT_SECRET = process.env.JWT_SECRET || "aetheria-hackathon-secure-fallback-secret-2026";
+const JWT_SECRET = process.env.JWT_SECRET || "aetheria-production-secure-fallback-secret-2026";
 const TOKEN_COOKIE_NAME = "aetheria_session_token";
 
 export interface TokenPayload {
