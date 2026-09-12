@@ -10,6 +10,7 @@ import { ShopArmory } from "@/components/ShopArmory";
 import { ActivityLogs } from "@/components/ActivityLogs";
 import { LevelUpModal } from "@/components/LevelUpModal";
 import { AuthModal } from "@/components/AuthModal";
+import { LandingPage } from "@/components/LandingPage";
 import { AttributeType, DifficultyType, QuestType } from "@/lib/rpgEngine";
 import { sounds } from "@/lib/soundEffects";
 import { Loader2 } from "lucide-react";
@@ -246,7 +247,7 @@ export default function Home() {
   }
 
   if (!user) {
-    return <AuthModal onSuccess={(newUser) => { setUser(newUser); refreshAll(); }} />;
+    return <LandingPage onLoginSuccess={(newUser) => { setUser(newUser); refreshAll(); }} />;
   }
 
   return (
