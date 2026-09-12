@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hashPassword, signToken, TOKEN_COOKIE_NAME } from "@/lib/auth";
+import { getRequiredXpForNextLevel, getRequiredGoldForLevelUp } from "@/lib/rpgEngine";
 
 export async function POST(req: NextRequest) {
   try {
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
         type: "DAILY",
         attribute: "INTELLECT",
         difficulty: "EASY",
-        xpReward: 30,
+        xpReward: 20,
         goldReward: 1,
       },
       {
@@ -105,7 +106,7 @@ export async function POST(req: NextRequest) {
         type: "HABIT",
         attribute: "VITALITY",
         difficulty: "EASY",
-        xpReward: 30,
+        xpReward: 20,
         goldReward: 1,
       },
     ];
@@ -128,6 +129,8 @@ export async function POST(req: NextRequest) {
         email: user.email,
         level: user.level,
         xp: user.xp,
+        nextLevelXp: getRequiredXpForNextLevel(user.level),
+        requiredGoldForLevelUp: getRequiredGoldForLevelUp(user.level),
         gold: user.gold,
         hp: user.hp,
         maxHp: user.maxHp,

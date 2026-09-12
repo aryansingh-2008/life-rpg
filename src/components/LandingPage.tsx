@@ -246,7 +246,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
                 Non-Linear Progression Math
               </h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Mathematically enforced curve: <code className="text-cyan-300">XP(L) = floor(100 * L^1.55)</code>. Server-authoritative anti-cheat calculation prevents users from spoofing levels or gold.
+                Mathematically enforced curve: <code className="text-cyan-300">XP(L) = floor(400 * L^1.65)</code>. Server-authoritative anti-cheat calculation prevents users from spoofing levels or coins.
               </p>
             </div>
 

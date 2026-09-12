@@ -54,10 +54,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   };
 
   const activeHero = getCharacterById(user.characterId || "aarav");
+  const reqXp = user.nextLevelXp || 400;
+  const reqGold = user.requiredGoldForLevelUp ?? 50;
 
   const xpPercent = Math.min(
     100,
-    Math.max(0, (user.xp / (user.nextLevelXp || 100)) * 100)
+    Math.max(0, (user.xp / reqXp) * 100)
   );
 
   return (
@@ -117,7 +119,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               <div className="flex justify-between text-[10px] font-mono text-slate-400">
                 <span>XP</span>
                 <span>
-                  {user.xp}/{user.nextLevelXp} (Cost: {user.requiredGoldForLevelUp || 50} Coins)
+                  {user.xp}/{reqXp} (Cost: {reqGold} Coins)
                 </span>
               </div>
               <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
@@ -130,20 +132,20 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           </div>
 
           {/* Ascension Action Button if XP is ready */}
-          {user.xp >= (user.nextLevelXp || 100) && (
-            user.gold >= (user.requiredGoldForLevelUp || 50) ? (
+          {user.xp >= reqXp && (
+            user.gold >= reqGold ? (
               <button
                 onClick={onAscend}
                 disabled={isAscending}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 text-xs font-mono font-black shadow-lg shadow-amber-500/30 animate-pulse transition active:scale-95"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Ascend to Lv.{user.level + 1} ({user.requiredGoldForLevelUp || 50} Coins)</span>
+                <span>Ascend to Lv.{user.level + 1} ({reqGold} Coins)</span>
               </button>
             ) : (
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold">
                 <Coins className="w-3.5 h-3.5 text-amber-400" />
-                <span>Need {(user.requiredGoldForLevelUp || 50) - user.gold} Coins to Ascend</span>
+                <span>Need {reqGold - user.gold} Coins to Ascend</span>
               </div>
             )
           )}

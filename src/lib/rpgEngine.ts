@@ -19,11 +19,11 @@ export const DIFFICULTY_CONFIG: Record<
   DifficultyType,
   { xp: number; gold: number; label: string; color: string }
 > = {
-  TRIVIAL: { xp: 15, gold: 1, label: "Trivial", color: "text-slate-400" },
-  EASY: { xp: 30, gold: 1, label: "Easy", color: "text-emerald-400" },
-  MEDIUM: { xp: 55, gold: 2, label: "Medium", color: "text-cyan-400" },
-  HARD: { xp: 95, gold: 3, label: "Hard", color: "text-amber-400" },
-  HEROIC: { xp: 160, gold: 5, label: "Heroic", color: "text-purple-400" },
+  TRIVIAL: { xp: 10, gold: 1, label: "Trivial", color: "text-slate-400" },
+  EASY: { xp: 20, gold: 1, label: "Easy", color: "text-emerald-400" },
+  MEDIUM: { xp: 40, gold: 2, label: "Medium", color: "text-cyan-400" },
+  HARD: { xp: 75, gold: 3, label: "Hard", color: "text-amber-400" },
+  HEROIC: { xp: 125, gold: 5, label: "Heroic", color: "text-purple-400" },
 };
 
 export const ATTRIBUTES_CONFIG: Record<
@@ -70,27 +70,27 @@ export const ATTRIBUTES_CONFIG: Record<
 /**
  * Non-Linear Level Progression Formula
  * XP required to advance from `level` to `level + 1`.
- * Each level requires exponentially more XP than the last.
+ * Scaled significantly so levels take sustained effort and long-term consistency.
  */
 export function getRequiredXpForNextLevel(level: number): number {
-  return Math.floor(100 * Math.pow(level, 1.55));
+  return Math.floor(400 * Math.pow(level, 1.65));
 }
 
 /**
  * Non-Linear Level Progression Gold Formula
- * Coins/Gold required to advance from `level` to `level + 1`.
- * Higher difficulty tiers require progressively more gold.
+ * Coins required to advance from `level` to `level + 1`.
+ * Higher difficulty tiers require progressively more coins.
  */
 export function getRequiredGoldForLevelUp(level: number): number {
-  if (level >= 30) return Math.floor(2500 + (level - 30) * 350);
-  if (level >= 20) return Math.floor(1000 + (level - 20) * 120);
-  if (level >= 10) return Math.floor(300 + (level - 10) * 60);
-  if (level >= 6) return Math.floor(90 + (level - 6) * 35);
-  if (level === 5) return 60;
-  if (level === 4) return 35;
-  if (level === 3) return 20;
-  if (level === 2) return 10;
-  return 5; // Level 1 -> 2
+  if (level >= 30) return Math.floor(20000 + (level - 30) * 3000);
+  if (level >= 20) return Math.floor(7000 + (level - 20) * 1200);
+  if (level >= 10) return Math.floor(1600 + (level - 10) * 500);
+  if (level >= 6) return Math.floor(600 + (level - 6) * 220);
+  if (level === 5) return 450;
+  if (level === 4) return 300;
+  if (level === 3) return 180;
+  if (level === 2) return 100;
+  return 50; // Level 1 -> 2: 50 Coins required!
 }
 
 /**

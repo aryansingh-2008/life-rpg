@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { signToken, TOKEN_COOKIE_NAME } from "@/lib/auth";
+import { getRequiredXpForNextLevel, getRequiredGoldForLevelUp } from "@/lib/rpgEngine";
 
 export async function POST() {
   try {
@@ -67,6 +68,8 @@ export async function POST() {
         email: user.email,
         level: user.level,
         xp: user.xp,
+        nextLevelXp: getRequiredXpForNextLevel(user.level),
+        requiredGoldForLevelUp: getRequiredGoldForLevelUp(user.level),
         gold: user.gold,
         hp: user.hp,
         maxHp: user.maxHp,
