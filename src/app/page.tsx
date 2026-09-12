@@ -10,6 +10,7 @@ import { ShopArmory } from "@/components/ShopArmory";
 import { ActivityLogs } from "@/components/ActivityLogs";
 import { CharacterSelectScreen } from "@/components/CharacterSelectScreen";
 import { LevelUpModal } from "@/components/LevelUpModal";
+import { UserProfileModal } from "@/components/UserProfileModal";
 import { AuthModal } from "@/components/AuthModal";
 import { LandingPage } from "@/components/LandingPage";
 import { AttributeType, DifficultyType, QuestType } from "@/lib/rpgEngine";
@@ -23,6 +24,9 @@ export default function Home() {
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"QUESTS" | "CHARACTER" | "ARMORY" | "RADAR" | "LOGS">("QUESTS");
+
+  // Profile modal state
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Streak notification state
   const [streakNotice, setStreakNotice] = useState<string | null>(null);
@@ -391,6 +395,7 @@ export default function Home() {
         onTabChange={setActiveTab}
         onLogout={handleLogout}
         onAscend={handleAscend}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
         isAscending={isAscending}
       />
 
@@ -522,6 +527,16 @@ export default function Home() {
         goldCost={levelUpData.goldCost}
         title={levelUpData.title}
         onClose={() => setLevelUpData((prev) => ({ ...prev, isOpen: false }))}
+      />
+
+      {/* User Profile & Adventurer Guild License Modal */}
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        user={user}
+        onProfileUpdated={(updatedUser) => {
+          setUser((prev: any) => ({ ...prev, ...updatedUser }));
+        }}
       />
     </main>
   );

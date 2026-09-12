@@ -9,6 +9,7 @@ import {
   LogOut,
   Sparkles,
   Shield,
+  User,
 } from "lucide-react";
 import { sounds } from "@/lib/soundEffects";
 import { getCharacterById } from "@/lib/charactersConfig";
@@ -36,6 +37,7 @@ interface HeaderNavProps {
   onTabChange: (tab: "QUESTS" | "CHARACTER" | "ARMORY" | "RADAR" | "LOGS") => void;
   onLogout: () => void;
   onAscend?: () => void;
+  onOpenProfile?: () => void;
   isAscending?: boolean;
 }
 
@@ -45,6 +47,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   onTabChange,
   onLogout,
   onAscend,
+  onOpenProfile,
   isAscending,
 }) => {
   const [isMuted, setIsMuted] = useState(sounds.getIsMuted());
@@ -85,16 +88,39 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   {activeHero.name} ({activeHero.classTag})
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
-                <span className="text-cyan-400 font-bold">{user.username}</span>
+              <button
+                onClick={() => {
+                  sounds.playClick();
+                  if (onOpenProfile) onOpenProfile();
+                }}
+                className="flex items-center gap-1.5 text-xs text-slate-400 font-mono hover:text-cyan-300 transition text-left group/profile py-0.5 -ml-1 px-1 rounded-lg hover:bg-slate-900/90 w-fit"
+                title="Open Adventurer ID & Edit Hero Profile"
+              >
+                <span className="text-cyan-400 font-bold group-hover/profile:underline flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-cyan-400" />
+                  {user.username}
+                </span>
                 <span>•</span>
                 <span className="text-slate-300">{user.title}</span>
-              </div>
+                <span className="text-[9px] font-mono text-cyan-400 border border-cyan-500/30 px-1 py-0.2 rounded bg-cyan-500/10 ml-0.5 group-hover/profile:border-cyan-400">
+                  Edit ID
+                </span>
+              </button>
             </div>
           </div>
 
           {/* Quick Controls Mobile */}
           <div className="flex md:hidden items-center gap-2">
+            <button
+              onClick={() => {
+                sounds.playClick();
+                if (onOpenProfile) onOpenProfile();
+              }}
+              title="Adventurer ID & Profile"
+              className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400"
+            >
+              <User className="w-4 h-4" />
+            </button>
             <button
               onClick={handleMuteToggle}
               className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"
@@ -189,8 +215,18 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             </div>
           </div>
 
-          {/* Desktop Sound & Logout */}
+          {/* Desktop Profile, Sound & Logout */}
           <div className="hidden md:flex items-center gap-2">
+            <button
+              onClick={() => {
+                sounds.playClick();
+                if (onOpenProfile) onOpenProfile();
+              }}
+              title="Adventurer ID & Hero Profile"
+              className="p-2 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-cyan-400 transition"
+            >
+              <User className="w-4 h-4" />
+            </button>
             <button
               onClick={handleMuteToggle}
               title={isMuted ? "Unmute Audio" : "Mute Audio"}
