@@ -15,6 +15,7 @@ import {
   Layers,
   ChevronDown,
   X,
+  Pencil,
 } from "lucide-react";
 import {
   ATTRIBUTES_CONFIG,
@@ -50,6 +51,16 @@ interface QuestSectionProps {
     attribute: AttributeType;
     difficulty: DifficultyType;
   }) => Promise<void>;
+  onUpdateQuest?: (
+    questId: string,
+    questData: {
+      title: string;
+      description?: string;
+      type: QuestType;
+      attribute: AttributeType;
+      difficulty: DifficultyType;
+    }
+  ) => Promise<void>;
   onDeleteQuest: (questId: string) => Promise<void>;
   isProcessingId?: string | null;
 }
@@ -58,12 +69,15 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
   quests,
   onCompleteQuest,
   onCreateQuest,
+  onUpdateQuest,
   onDeleteQuest,
   isProcessingId,
 }) => {
   const [activeTab, setActiveTab] = useState<string>("ALL");
   const [selectedAttribute, setSelectedAttribute] = useState<string>("ALL");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingQuestId, setEditingQuestId] = useState<string | null>(null);
 
   // Form states
   const [title, setTitle] = useState("");
@@ -122,6 +136,49 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
       setIsCreateModalOpen(false);
     } catch (err: any) {
       setFormError(err.message || "Failed to create quest");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleStartEdit = (e: React.MouseEvent, q: Quest) => {
+    e.stopPropagation();
+    sounds.playClick();
+    setEditingQuestId(q.id);
+    setTitle(q.title);
+    setDescription(q.description || "");
+    setType(q.type as QuestType);
+    setAttribute(q.attribute as AttributeType);
+    setDifficulty(q.difficulty as DifficultyType);
+    setFormError("");
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) {
+      setFormError("Please provide a quest title");
+      return;
+    }
+    if (!editingQuestId || !onUpdateQuest) return;
+
+    setIsSubmitting(true);
+    setFormError("");
+    try {
+      sounds.playClick();
+      await onUpdateQuest(editingQuestId, {
+        title: title.trim(),
+        description: description.trim() || undefined,
+        type,
+        attribute,
+        difficulty,
+      });
+      setIsEditModalOpen(false);
+      setEditingQuestId(null);
+      setTitle("");
+      setDescription("");
+    } catch (err: any) {
+      setFormError(err.message || "Failed to update quest");
     } finally {
       setIsSubmitting(false);
     }
@@ -316,6 +373,17 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
                     </span>
                   </div>
 
+                  {onUpdateQuest && (
+                    <button
+                      onClick={(e) => handleStartEdit(e, quest)}
+                      title="Edit quest"
+                      aria-label="Edit quest"
+                      className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                  )}
+
                   <button
                     onClick={() => {
                       sounds.playClick();
@@ -471,6 +539,146 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
                   className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-mono font-bold shadow-lg shadow-cyan-500/30 active:scale-95 transition"
                 >
                   {isSubmitting ? "FORGING..." : "FORGE QUEST"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Edit Existing Quest */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in">
+          <div className="relative w-full max-w-lg rounded-3xl bg-slate-900 border border-indigo-500/30 p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <Pencil className="w-5 h-5 text-indigo-400" />
+                <h3 className="text-base font-bold text-white font-mono">
+                  MODIFY QUEST
+                </h3>
+              </div>
+              <button
+                onClick={() => {
+                  setIsEditModalOpen(false);
+                  setEditingQuestId(null);
+                }}
+                className="p-1 rounded-lg text-slate-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="flex flex-col gap-4 mt-4">
+              {formError && (
+                <div className="p-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-xs font-mono text-red-400">
+                  {formError}
+                </div>
+              )}
+
+              {/* Title */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-mono text-slate-400">Quest Title *</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g. Read 20 pages of system architecture"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 font-sans"
+                  required
+                />
+              </div>
+
+              {/* Description */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-mono text-slate-400">Quest Lore / Details (Optional)</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={2}
+                  placeholder="Additional context or victory conditions..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 resize-none font-sans"
+                />
+              </div>
+
+              {/* Selects: Type, Attribute, Difficulty */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-mono text-slate-400">Category</label>
+                  <select
+                    value={type}
+                    onChange={(e) => setType(e.target.value as QuestType)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="DAILY">Daily Ritual</option>
+                    <option value="HABIT">Repeating Habit</option>
+                    <option value="BOUNTY">Heroic Bounty</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-mono text-slate-400">Attribute</label>
+                  <select
+                    value={attribute}
+                    onChange={(e) => setAttribute(e.target.value as AttributeType)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="STRENGTH">Strength ⚔️</option>
+                    <option value="INTELLECT">Intellect 🧠</option>
+                    <option value="AGILITY">Agility ⚡</option>
+                    <option value="VITALITY">Vitality 🌿</option>
+                    <option value="SPIRIT">Spirit 🔮</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-mono text-slate-400">Difficulty</label>
+                  <select
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value as DifficultyType)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="TRIVIAL">Trivial</option>
+                    <option value="EASY">Easy</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HARD">Hard</option>
+                    <option value="HEROIC">Heroic</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Reward Preview Card */}
+              <div className="p-3 rounded-xl bg-slate-950/80 border border-indigo-500/20 flex items-center justify-between text-xs font-mono">
+                <span className="text-slate-400">Recalibrated Rewards:</span>
+                <div className="flex items-center gap-3">
+                  <span className="font-bold text-cyan-400">
+                    +{rewardPreview.xp} XP
+                  </span>
+                  <span className="font-bold text-amber-400">
+                    +{rewardPreview.gold} {rewardPreview.gold === 1 ? "Coin" : "Coins"}
+                  </span>
+                  <span className="font-bold text-purple-400">
+                    +1 {attribute}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditModalOpen(false);
+                    setEditingQuestId(null);
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-mono font-bold text-slate-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-mono font-bold shadow-lg shadow-indigo-500/30 active:scale-95 transition"
+                >
+                  {isSubmitting ? "SAVING..." : "SAVE CHANGES"}
                 </button>
               </div>
             </form>

@@ -185,6 +185,30 @@ export default function Home() {
     setQuests((prev) => [data.quest, ...prev]);
   };
 
+  // Update quest handler
+  const handleUpdateQuest = async (
+    questId: string,
+    questData: {
+      title: string;
+      description?: string;
+      type: QuestType;
+      attribute: AttributeType;
+      difficulty: DifficultyType;
+    }
+  ) => {
+    const res = await fetch(`/api/quests/${questId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(questData),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to update quest");
+
+    setQuests((prev) =>
+      prev.map((q) => (q.id === questId ? data.quest : q))
+    );
+  };
+
   // Delete quest handler
   const handleDeleteQuest = async (questId: string) => {
     const res = await fetch(`/api/quests/${questId}`, {
@@ -432,6 +456,7 @@ export default function Home() {
               quests={quests}
               onCompleteQuest={handleCompleteQuest}
               onCreateQuest={handleCreateQuest}
+              onUpdateQuest={handleUpdateQuest}
               onDeleteQuest={handleDeleteQuest}
               isProcessingId={isProcessingQuestId}
             />

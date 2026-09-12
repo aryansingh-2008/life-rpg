@@ -26,6 +26,13 @@ export async function PUT(
     const body = await req.json();
     const { title, description, type, attribute, difficulty, dueDate } = body;
 
+    if (title !== undefined && title.trim().length === 0) {
+      return NextResponse.json(
+        { error: "Quest title cannot be empty" },
+        { status: 400 }
+      );
+    }
+
     const validDifficulty = (difficulty || existingQuest.difficulty).toUpperCase() as DifficultyType;
     const validAttribute = (attribute || existingQuest.attribute).toUpperCase() as AttributeType;
     const validType = (type || existingQuest.type).toUpperCase() as QuestType;

@@ -83,6 +83,17 @@ Traditional habit trackers and to-do lists fail because they feel like chores. T
 ### 6. Historical Audit Chronicles
 - Full audit log of completed quests, timestamps, XP earned, and attributes boosted stored persistently in the database.
 
+### 7. Authoritative Streak Protection Shield System
+- **Streak Break Prevention**: 1 missed day consumes 1 shield instead of resetting your streak.
+- **7-Day Milestone Reward**: Earn +1 Streak Protection Shield every 7 consecutive days of activity.
+- **Strict Cap of 2**: Shield inventory is strictly capped at a maximum of 2 shields (never overflows).
+- **Header Badge & Visual Indicators**: Live shield slot pips and informative tooltips in the top navigation.
+
+### 8. 20-Hero Character Roster & Dynamic Evolution
+- **Diverse Roster**: 20 distinct hero identities (10 male, 10 female) each with custom HD portrait art, background lore, class tags, and attribute specializations.
+- **4 Evolution Tiers**: Characters visually advance from *Novice (Tier I)* to *Ascended Sovereign (Tier IV)* as the player levels up.
+- **Coin & Level Recruitment**: Recruit new heroes from the character selection screen using accumulated in-game Coins and disciplined level milestones.
+
 ---
 
 ## 🚀 Quickstart & Local Installation
@@ -124,7 +135,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 To evaluate the project instantly without signing up:
 1. Open the web app.
 2. Click **"1-CLICK DEMO CHARACTER LOGIN"**.
-3. You will immediately enter as `CyberKnight_Alex` (Level 3 Aether Initiate) with preloaded quests, equipped Cyber Katana, 280g, and an active Boss Raid.
+3. You will immediately enter as `CyberKnight_Alex` (Level 3 Aether Initiate) with preloaded quests, equipped Cyber Katana, 280 Coins, and an active Boss Raid.
 
 ---
 
