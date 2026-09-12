@@ -79,8 +79,24 @@ export default function Home() {
     }
   }, []);
 
+  const [isOffline, setIsOffline] = useState(false);
+
   useEffect(() => {
     refreshAll();
+
+    const handleOnline = () => {
+      setIsOffline(false);
+      refreshAll();
+    };
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
   }, [refreshAll]);
 
   // Complete quest handler with authoritative backend progression
@@ -252,6 +268,14 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex flex-col bg-slate-950 pb-16">
+      {/* Offline Alert Banner */}
+      {isOffline && (
+        <div className="bg-amber-500/20 border-b border-amber-500/40 px-4 py-2 text-center text-xs font-mono font-bold text-amber-300 flex items-center justify-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+          <span>NETWORK DISCONNECTED: You are currently offline. Local state is preserved; syncing will resume when connection restores.</span>
+        </div>
+      )}
+
       {/* Top Header Navigation */}
       <HeaderNav
         user={user}
