@@ -1,6 +1,9 @@
 {
   "name": "life-rpg",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Aetheria // Full-stack 3D Life RPG turning real-world discipline into tactile progression",
+  "author": "Aryan Singh <aryansingh221313@gmail.com>",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "next dev",

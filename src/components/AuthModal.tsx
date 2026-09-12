@@ -85,11 +85,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
             </p>
           </div>
 
-          {/* 1-Click Judge Demo Evaluation Button */}
+          {/* 1-Click Instant Guest Demo Button */}
           <div className="flex flex-col gap-2 p-3 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-indigo-950/40 to-slate-900 border border-cyan-500/40">
             <div className="flex items-center justify-between text-[11px] font-mono">
               <span className="text-cyan-400 font-bold flex items-center gap-1">
-                <Zap className="w-3.5 h-3.5 text-amber-400" /> HACKATHON JUDGE MODE
+                <Zap className="w-3.5 h-3.5 text-amber-400" /> INSTANT GUEST PASS
               </span>
               <span className="text-slate-400">Zero-Setup</span>
             </div>
@@ -99,7 +99,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onSuccess }) => {
               className="w-full py-2.5 px-4 rounded-xl font-mono text-xs font-bold bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 transition"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
-              <span>1-CLICK DEMO CHARACTER LOGIN</span>
+              <span>ENTER WITH INSTANT DEMO CHARACTER</span>
             </button>
           </div>
 

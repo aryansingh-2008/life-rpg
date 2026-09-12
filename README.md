@@ -15,16 +15,25 @@
 ---
 
 
-## 🌟 The Core Problem & Our Solution
+## 💡 Developer Story: Why I Built Aetheria
 
-Traditional habit trackers and to-do lists fail because they feel like chores. They suffer from the **"delayed gratification"** problem: reading a textbook or going to the gym takes months to show tangible results. In contrast, video games provide immediate dopamine through tactile feedback loops, clear leveling systems, and visual trophies.
+> *"I've always struggled with traditional to-do lists and habit apps like Habitica or Notion. They felt either like a second spreadsheet job or rigid 2D pixel trackers without true emotional stakes. As an engineering student and gamer, I can easily sit for hours grinding rank in competitive games because every action delivers immediate visual and auditory feedback.*
+>
+> *I built **Aetheria** to bring that exact visceral feedback loop to everyday discipline: live 3D WebGL armor sets, boss damage whenever you finish a difficult coding problem or workout, and authoritative streak protection shields so unexpected real-life emergencies don't erase weeks of hard work."*  
+> — **Aryan Singh** ([@aryansingh-2008](https://github.com/aryansingh-2008))
 
-**Aetheria** solves this problem by engineering a **production-grade, server-authoritative Life RPG**. Mundane checkmarks transform into visceral victories:
+---
+
+## 🌟 The Core Problem & Solution
+
+Traditional habit trackers fail because they suffer from the **delayed gratification gap**: reading a complex book, writing clean algorithms, or going to the gym takes months to show tangible real-world results. 
+
+**Aetheria** bridges this gap by turning discipline into an immersive, server-authoritative 3D RPG:
 
 - 🎮 **Tactile Dopamine**: Earning XP triggers synthesized Web Audio chimes, particle confetti bursts, and celebratory level-up modals.
 - 🛡️ **Interactive 3D Hero Avatar (Three.js)**: A live WebGL 3D character that updates visually whenever you equip weapons, shields, wings, or crowns in the shop.
 - 🔒 **Server-Authoritative Anti-Cheat**: Stats, streaks, leveling curves, and gold transactions are strictly computed and verified on the backend to prevent client-side spoofing.
-- 📜 **Real Database Persistence**: Backed by Prisma ORM and SQLite (local zero-setup) with seamless PostgreSQL support (Supabase/Neon) for production.
+- 📜 **Real PostgreSQL Cloud Persistence**: Backed by Prisma ORM and Supabase PostgreSQL with connection pooling.
 - ⚔️ **Boss Raid Dungeon Arena**: Completing real-world tasks deals direct attack damage to a dynamic raid boss monster!
 
 ---
@@ -75,7 +84,7 @@ Traditional habit trackers and to-do lists fail because they feel like chores. T
 - Atomic database transactions (`prisma.$transaction`) ensure data consistency across leveling, gold rewards, quest logs, and boss health.
 - Streak multipliers automatically reward consecutive daily activity (+5% per consecutive day up to +50%).
 
-### 4. Boss Raid Arena (Hackathon X-Factor)
+### 4. Boss Raid Arena (Kinetic Habit Slaying)
 - Active boss: **Malakor the Procrastinator** (Lord of Endless Delay).
 - Every completed quest strikes the boss with kinetic damage.
 - Slaying the boss triggers screen-wide celebratory fireworks and awards a +150 Coins victory bounty before spawning the next tier boss.
@@ -136,11 +145,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🎯 1-Click Judge Evaluation Mode
-To evaluate the project instantly without signing up:
+## 🎯 1-Click Instant Guest Evaluation Mode
+To evaluate the live platform immediately without signing up:
 1. Open the web app.
-2. Click **"1-CLICK DEMO CHARACTER LOGIN"**.
-3. You will immediately enter as `CyberKnight_Alex` (Level 3 Aether Initiate) with preloaded quests, equipped Cyber Katana, 280 Coins, and an active Boss Raid.
+2. Click **"TRY INSTANT DEMO"** (or **"ENTER WITH INSTANT DEMO CHARACTER"**).
+3. You will immediately enter as `Aarav` (Level 3 The Wanderer) with preloaded quests, equipped Cyber Katana, 280 Coins, and an active Boss Raid.
 
 ---
 

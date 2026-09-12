@@ -78,14 +78,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* 1-Click Judge Demo Button */}
+            {/* Quick Demo Play Button */}
             <button
               onClick={handleDemoLogin}
               disabled={isDemoLoading}
               className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 shadow-md shadow-amber-500/10 active:scale-95 transition"
+              title="Enter immediately as Level 3 demo hero"
             >
               <Zap className="w-3.5 h-3.5 text-amber-400 fill-current" />
-              <span>{isDemoLoading ? "CONNECTING..." : "1-CLICK JUDGE DEMO"}</span>
+              <span>{isDemoLoading ? "CONNECTING..." : "TRY INSTANT DEMO"}</span>
             </button>
 
             <button
@@ -116,7 +117,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
           <div className="lg:col-span-7 flex flex-col gap-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-bold w-fit">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-              <span>THE LIFE RPG HACKATHON REVOLUTION</span>
+              <span>DISCIPLINE ENGINE // V1.0 PRODUCTION</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-mono tracking-tight text-white leading-tight">
@@ -135,7 +136,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
                 className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 flex items-center justify-center gap-2.5 shadow-xl shadow-cyan-500/25 active:scale-95 transition"
               >
                 <Play className="w-4 h-4 fill-current" />
-                <span>{isDemoLoading ? "INITIALIZING REALM..." : "1-CLICK DEMO CHARACTER (JUDGE MODE)"}</span>
+                <span>{isDemoLoading ? "INITIALIZING REALM..." : "ENTER DEMO REALM (1-CLICK PLAY)"}</span>
               </button>
 
               <button
@@ -197,10 +198,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
         <div className="max-w-7xl mx-auto flex flex-col gap-10">
           <div className="flex flex-col items-center text-center gap-2">
             <span className="text-xs font-mono font-bold tracking-widest text-cyan-400 uppercase">
-              ENGINEERED FOR HACKATHON VICTORY
+              CORE GAMEPLAY ARCHITECTURE
             </span>
             <h2 className="text-3xl sm:text-4xl font-black font-mono text-white">
-              Why Aetheria Dominates Ordinary Habit Trackers
+              Why Aetheria Works When To-Do Lists Fail
             </h2>
             <p className="text-sm text-slate-400 max-w-xl">
               Every system is built to eliminate delayed gratification and deliver instant tactile dopamine.
@@ -266,10 +267,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
                 <Database className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white font-mono">
-                Prisma Database Persistence
+                PostgreSQL Cloud Persistence
               </h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Strict zero-tolerance compliance. All quests, inventory, and historical audit chronicles persist permanently in SQLite / PostgreSQL. Pressing F5 loses zero data.
+                Real database persistence powered by Supabase PostgreSQL. Quests, inventory, attribute allocation, and audit logs persist securely across page refreshes and devices.
               </p>
             </div>
 
@@ -289,8 +290,35 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
         </div>
       </section>
 
-      {/* Bottom CTA Banner */}
+      {/* Human Developer Story Section */}
       <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-indigo-950/40 border border-slate-800 p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-8 backdrop-blur-md shadow-2xl">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-slate-950 font-black text-2xl font-mono shrink-0 shadow-lg shadow-cyan-500/25">
+            AS
+          </div>
+          <div className="flex flex-col gap-2.5 text-left">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">
+                Developer Note
+              </span>
+              <span className="text-slate-600">•</span>
+              <span className="text-xs text-slate-400 font-mono">By Aryan Singh</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold font-mono text-white">
+              Why I built Aetheria
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+              Traditional productivity tools always felt like a second job. When checking off an item on a plain to-do list doesn&apos;t produce an immediate tactile sensation, it is so easy to fall into procrastination. As a developer and gamer, I wanted to experience real-world discipline with the same dopamine loop that keeps us engaged in RPGs: real bosses, authentic weapon progression, and tangible streak shields.
+            </p>
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-sans">
+              Aetheria was hand-crafted to prove that self-improvement doesn&apos;t have to feel like homework.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA Banner */}
+      <section className="py-12 px-4">
         <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-r from-cyan-950/60 via-slate-900 to-indigo-950/60 border border-cyan-500/30 p-8 sm:p-12 text-center flex flex-col items-center gap-5 shadow-2xl">
           <div className="p-3 rounded-2xl bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
             <Zap className="w-8 h-8 animate-pulse" />
@@ -301,7 +329,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
           </h2>
 
           <p className="text-sm text-slate-300 max-w-lg leading-relaxed">
-            Experience the full live platform instantly. No registration hurdles for hackathon judges—enter with 1 click!
+            Explore the full live platform instantly. Test 3D equipment, boss combat, and quest progression with a pre-configured adventurer.
           </p>
 
           <button
@@ -310,7 +338,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
             className="px-8 py-4 rounded-2xl font-mono text-sm font-bold bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 shadow-xl shadow-cyan-500/30 active:scale-95 transition flex items-center gap-2"
           >
             <Play className="w-4 h-4 fill-current" />
-            <span>ENTER WITH 1-CLICK DEMO CHARACTER</span>
+            <span>LAUNCH INSTANT PLAY DEMO</span>
           </button>
         </div>
       </section>
@@ -318,7 +346,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
       {/* Footer */}
       <footer className="mt-auto py-8 border-t border-slate-900 text-center text-xs font-mono text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span>AETHERIA // LIFE RPG • Hackathon 2026 Edition</span>
+          <span>AETHERIA // LIFE RPG • Built by Aryan Singh</span>
           <div className="flex items-center gap-4">
             <span className="text-slate-400">Next.js 14 • Three.js • Prisma ORM</span>
           </div>
