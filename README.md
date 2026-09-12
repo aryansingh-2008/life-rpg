@@ -107,7 +107,7 @@ Traditional habit trackers and to-do lists fail because they feel like chores. T
 
 ### Step 1: Clone and Install Dependencies
 ```bash
-git clone https://github.com/your-username/life-rpg.git
+git clone https://github.com/aryansingh-2008/life-rpg.git
 cd life-rpg
 npm install
 ```
