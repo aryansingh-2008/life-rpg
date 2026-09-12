@@ -6,7 +6,10 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-3D_WebGL-black?style=flat-square&logo=three.js)](https://threejs.org/)
 [![Prisma ORM](https://img.shields.io/badge/Prisma-ORM-teal?style=flat-square&logo=prisma)](https://www.prisma.io/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
+
+[![Live Demo](https://img.shields.io/badge/LIVE_PRODUCTION_URL-https%3A%2F%2Flife--rpg--nine--gules.vercel.app-00f2fe?style=for-the-badge&logo=vercel)](https://life-rpg-nine-gules.vercel.app)
 
 ---
 
@@ -139,16 +142,14 @@ To evaluate the project instantly without signing up:
 
 ---
 
-## 🚢 Production Cloud Deployment (Vercel)
+## 🚢 Production Cloud Deployment (Vercel + Supabase)
 
-1. Push your repository to GitHub.
-2. Import the project into [Vercel](https://vercel.com).
-3. Under Environment Variables:
-   - `DATABASE_URL`: Add your PostgreSQL connection string (from free [Neon](https://neon.tech) or [Supabase](https://supabase.com)).
-   - `JWT_SECRET`: Any random 32-character secret string.
-   - `NEXT_PUBLIC_APP_URL`: Your live production domain.
-4. If using PostgreSQL for production, set `provider = "postgresql"` in `prisma/schema.prisma`.
-5. Deploy! The project builds with zero errors.
+- **Live Deployed Web Application**: [https://life-rpg-nine-gules.vercel.app](https://life-rpg-nine-gules.vercel.app)
+- **Production Architecture**:
+  - **Hosting**: Vercel Global Edge Network with automatic Next.js 14 App Router serverless optimization.
+  - **Cloud Database**: Managed PostgreSQL on Supabase (`aws-0-ap-south-1.pooler.supabase.com`) with IPv4 transaction connection pooling (`pgbouncer`).
+  - **Database Migration**: Fully migrated and pre-seeded via Prisma ORM (`prisma db push` + `prisma db seed`).
+  - **Zero-Tolerance Compliance**: 100% reliable database persistence with cross-device synchronization and page refresh retention.
 
 ---
 
