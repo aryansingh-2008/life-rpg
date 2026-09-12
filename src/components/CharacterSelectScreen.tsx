@@ -345,29 +345,22 @@ export const CharacterSelectScreen: React.FC<CharacterSelectScreenProps> = ({
                   </span>
                 </div>
 
-                {/* Character Visual Avatar */}
-                <div className="w-full aspect-[4/5] rounded-xl overflow-hidden relative mb-3 bg-gradient-to-b from-slate-800 to-slate-950 flex flex-col items-center justify-end p-3 border border-slate-800/60 group-hover:border-slate-700 transition">
-                  {/* Subtle Background Accent Gradient */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-t ${char.avatarGradient} opacity-20 group-hover:opacity-30 transition`}
+                {/* Character Visual Artwork */}
+                <div className="w-full aspect-[4/5] rounded-xl overflow-hidden relative mb-3 bg-gradient-to-b from-slate-900 to-slate-950 flex flex-col items-center justify-end p-2 border border-slate-800/80 group-hover:border-cyan-500/50 transition">
+                  {/* Full-bleed Anime Illustration */}
+                  <img
+                    src={char.imageUrl}
+                    alt={char.name}
+                    className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = "none";
+                    }}
                   />
-
-                  {/* Character Silhouette / Icon Graphic */}
-                  <div className="relative z-10 flex flex-col items-center gap-2 mb-2">
-                    <div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg border backdrop-blur-sm"
-                      style={{
-                        backgroundColor: `${char.accentColor}18`,
-                        borderColor: `${char.accentColor}50`,
-                        color: char.accentColor,
-                      }}
-                    >
-                      <User className="w-8 h-8" />
-                    </div>
-                  </div>
+                  {/* Bottom gradient shadow for readable archetype tag */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent pointer-events-none" />
 
                   {/* Element & Archetype tag */}
-                  <div className="relative z-10 flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-950/80 backdrop-blur-md border border-slate-800 text-[10px] font-mono text-slate-300">
+                  <div className="relative z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-950/85 backdrop-blur-md border border-slate-700/60 text-[10px] font-mono text-slate-200 shadow-md">
                     {renderElementIcon(char.elementIcon)}
                     <span>{char.archetype}</span>
                   </div>
@@ -450,48 +443,38 @@ export const CharacterSelectScreen: React.FC<CharacterSelectScreenProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           {/* Left Column: Big Character Portrait Box */}
           <div className="lg:col-span-4 flex flex-col items-center">
-            <div className="w-full max-w-[280px] aspect-[4/5] rounded-2xl overflow-hidden relative border-2 border-cyan-500/40 shadow-2xl bg-gradient-to-b from-slate-800 to-slate-950 flex flex-col items-center justify-between p-4">
-              <div
-                className={`absolute inset-0 bg-gradient-to-t ${selectedChar.avatarGradient} opacity-30`}
+            <div className="w-full max-w-[280px] aspect-[4/5] rounded-2xl overflow-hidden relative border-2 border-cyan-500/40 shadow-2xl bg-gradient-to-b from-slate-900 to-slate-950 flex flex-col items-center justify-between p-4 group">
+              {/* Full-bleed Anime Artwork */}
+              <img
+                src={selectedChar.imageUrl}
+                alt={selectedChar.name}
+                className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-slate-950/50 pointer-events-none" />
 
               {/* Top Details inside frame */}
               <div className="w-full flex items-center justify-between z-10">
-                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-950/80 text-cyan-300 border border-cyan-500/30">
+                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-slate-950/85 text-cyan-300 border border-cyan-500/40 backdrop-blur-md shadow-md">
                   {selectedChar.gender}
                 </span>
-                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-950/80 text-amber-300 border border-amber-500/30">
+                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-slate-950/85 text-amber-300 border border-amber-500/40 backdrop-blur-md shadow-md">
                   Lv. {selectedChar.requiredLevel}
                 </span>
               </div>
 
-              {/* Center Portrait Icon Avatar */}
-              <div className="relative z-10 flex flex-col items-center gap-3 my-auto">
-                <div
-                  className="w-24 h-24 rounded-3xl flex items-center justify-center shadow-2xl border-2 backdrop-blur-md"
-                  style={{
-                    backgroundColor: `${selectedChar.accentColor}25`,
-                    borderColor: `${selectedChar.accentColor}80`,
-                    color: selectedChar.accentColor,
-                  }}
-                >
-                  <User className="w-12 h-12" />
-                </div>
-                <div className="text-center">
-                  <h4 className="font-serif text-lg font-black text-white">
+              {/* Bottom Character Info inside card */}
+              <div className="w-full z-10 flex flex-col items-center text-center mt-auto">
+                <div className="px-3.5 py-2 rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-700/70 w-full flex flex-col items-center shadow-xl">
+                  <h4 className="font-serif text-lg font-black text-white tracking-wide">
                     {selectedChar.name}
                   </h4>
-                  <p className="text-xs font-mono text-cyan-400 font-semibold">
+                  <p className="text-xs font-mono text-cyan-400 font-bold">
                     {selectedChar.classTag}
                   </p>
+                  <span className="text-[11px] font-mono text-slate-300 mt-0.5">
+                    Archetype: <strong className="text-cyan-200">{selectedChar.archetype}</strong>
+                  </span>
                 </div>
-              </div>
-
-              {/* Status footer inside card */}
-              <div className="w-full z-10 text-center">
-                <span className="text-[11px] font-mono text-slate-400">
-                  Archetype: <strong className="text-slate-200">{selectedChar.archetype}</strong>
-                </span>
               </div>
             </div>
           </div>

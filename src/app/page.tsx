@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { HeaderNav } from "@/components/HeaderNav";
-import { Hero3DCanvas } from "@/components/Hero3DCanvas";
+import { HeroShowcaseCard } from "@/components/HeroShowcaseCard";
 import { AttributesRadar } from "@/components/AttributesRadar";
 import { BossBattleArena } from "@/components/BossBattleArena";
 import { QuestSection } from "@/components/QuestSection";
@@ -364,12 +364,13 @@ export default function Home() {
       <div className="max-w-7xl mx-auto w-full px-4 pt-6 flex flex-col gap-6">
         {/* Top Hero Grid: 3D Hero Avatar + Boss Battle Arena */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* 3D Interactive Hero Canvas */}
+          {/* Hero Showcase Card (Rich 2D Character Artwork & Evolution Path) */}
           <div className="lg:col-span-5 w-full">
-            <Hero3DCanvas
+            <HeroShowcaseCard
               level={user.level}
               characterId={user.characterId}
               equippedItems={user.inventory?.filter((inv: any) => inv.isEquipped)}
+              onSwitchCharacter={() => setActiveTab("CHARACTER")}
             />
           </div>
 

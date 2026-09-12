@@ -18,7 +18,7 @@ import {
   FileText,
   Layers,
 } from "lucide-react";
-import { Hero3DCanvas } from "@/components/Hero3DCanvas";
+import { HeroShowcaseCard } from "@/components/HeroShowcaseCard";
 import { AuthModal } from "@/components/AuthModal";
 import { sounds } from "@/lib/soundEffects";
 
@@ -164,33 +164,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
             </div>
           </div>
 
-          {/* Right Column: Live Interactive 3D Model Preview */}
+          {/* Right Column: Live Interactive Hero Showcase Preview */}
           <div className="lg:col-span-5 flex flex-col gap-3">
-            <div className="p-1 rounded-3xl bg-gradient-to-b from-cyan-500/30 to-indigo-500/10 shadow-2xl">
-              <Hero3DCanvas
-                level={3}
-                equippedItems={[
-                  {
-                    item: {
-                      category: "WEAPON",
-                      visualKey: "cyber_katana",
-                      rarity: "RARE",
-                    },
+            <HeroShowcaseCard
+              level={8}
+              characterId="ananya"
+              equippedItems={[
+                {
+                  item: {
+                    name: "Cyber Katana",
+                    category: "WEAPON",
+                    visualKey: "cyber_katana",
+                    rarity: "RARE",
                   },
-                  {
-                    item: {
-                      category: "WINGS",
-                      visualKey: "cyber_wings",
-                      rarity: "RARE",
-                    },
+                },
+                {
+                  item: {
+                    name: "Plasma Aegis",
+                    category: "SHIELD",
+                    visualKey: "cyber_shield",
+                    rarity: "RARE",
                   },
-                ]}
-              />
-            </div>
-            <div className="flex items-center justify-between text-xs font-mono text-slate-400 px-2">
-              <span>Drag 3D model with mouse to inspect</span>
-              <span className="text-cyan-400 font-bold">Three.js WebGL Engine</span>
-            </div>
+                },
+              ]}
+            />
           </div>
         </div>
       </section>
