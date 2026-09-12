@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     if (!unlockedList.includes(characterId)) {
       return NextResponse.json(
         {
-          error: `You have not yet recruited ${character.name}. Unlock them with ${character.coinCost} gold at Level ${character.requiredLevel}!`,
+          error: `You have not yet recruited ${character.name}. Unlock them with ${character.coinCost} coins at Level ${character.requiredLevel}!`,
         },
         { status: 403 }
       );

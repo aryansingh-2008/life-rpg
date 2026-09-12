@@ -20,10 +20,10 @@ export const DIFFICULTY_CONFIG: Record<
   { xp: number; gold: number; label: string; color: string }
 > = {
   TRIVIAL: { xp: 15, gold: 1, label: "Trivial", color: "text-slate-400" },
-  EASY: { xp: 30, gold: 2, label: "Easy", color: "text-emerald-400" },
-  MEDIUM: { xp: 55, gold: 3, label: "Medium", color: "text-cyan-400" },
-  HARD: { xp: 95, gold: 5, label: "Hard", color: "text-amber-400" },
-  HEROIC: { xp: 160, gold: 10, label: "Heroic", color: "text-purple-400" },
+  EASY: { xp: 30, gold: 1, label: "Easy", color: "text-emerald-400" },
+  MEDIUM: { xp: 55, gold: 2, label: "Medium", color: "text-cyan-400" },
+  HARD: { xp: 95, gold: 3, label: "Hard", color: "text-amber-400" },
+  HEROIC: { xp: 160, gold: 5, label: "Heroic", color: "text-purple-400" },
 };
 
 export const ATTRIBUTES_CONFIG: Record<
@@ -82,15 +82,15 @@ export function getRequiredXpForNextLevel(level: number): number {
  * Higher difficulty tiers require progressively more gold.
  */
 export function getRequiredGoldForLevelUp(level: number): number {
-  if (level >= 30) return Math.floor(550 + (level - 30) * 50);
-  if (level >= 20) return Math.floor(250 + (level - 20) * 28);
-  if (level >= 10) return Math.floor(80 + (level - 10) * 16);
-  if (level >= 6) return Math.floor(30 + (level - 6) * 11);
-  if (level === 5) return 22;
-  if (level === 4) return 15;
-  if (level === 3) return 10;
-  if (level === 2) return 6;
-  return 3; // Level 1 -> 2: only 3 coins
+  if (level >= 30) return Math.floor(2500 + (level - 30) * 350);
+  if (level >= 20) return Math.floor(1000 + (level - 20) * 120);
+  if (level >= 10) return Math.floor(300 + (level - 10) * 60);
+  if (level >= 6) return Math.floor(90 + (level - 6) * 35);
+  if (level === 5) return 60;
+  if (level === 4) return 35;
+  if (level === 3) return 20;
+  if (level === 2) return 10;
+  return 5; // Level 1 -> 2
 }
 
 /**
@@ -172,8 +172,8 @@ export function calculateQuestRewards(
   // Streak multiplier: 5% extra XP per streak day up to max 50% extra
   const streakMultiplier = Math.min(streak * 0.05, 0.5);
   const streakBonusXp = Math.round(baseXp * streakMultiplier);
-  // Dedicated streak bonus: +1 Coin for maintaining 5+ day streak
-  const streakBonusGold = streak >= 5 ? 1 : 0;
+  // Dedicated streak bonus: +1 Coin only for maintaining 7+ day dedicated streak
+  const streakBonusGold = streak >= 7 ? 1 : 0;
 
   const totalXp = baseXp + streakBonusXp;
   const totalGold = baseGold + streakBonusGold;

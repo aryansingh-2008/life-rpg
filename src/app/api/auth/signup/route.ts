@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
         attribute: "INTELLECT",
         difficulty: "EASY",
         xpReward: 30,
-        goldReward: 2,
+        goldReward: 1,
       },
       {
         userId: user.id,
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
         attribute: "VITALITY",
         difficulty: "EASY",
         xpReward: 30,
-        goldReward: 2,
+        goldReward: 1,
       },
     ];
 

@@ -124,7 +124,7 @@ export async function POST(
 
     if (updatedBossHp === 0) {
       bossDefeatedNow = true;
-      bossBonusGold = 15 + updatedBossLevel * 5;
+      bossBonusGold = 5 + updatedBossLevel * 2;
       // Respawn next boss tier
       updatedBossLevel += 1;
       updatedBossMaxHp = 500 + updatedBossLevel * 250;
