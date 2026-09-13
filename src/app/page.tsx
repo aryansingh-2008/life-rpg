@@ -20,7 +20,6 @@ import { Loader2, Shield, X, Swords, Sparkles, Zap, ScrollText } from "lucide-re
 export default function Home() {
   const [user, setUser] = useState<any | null>(null);
   const [hasEnteredApp, setHasEnteredApp] = useState(false);
-  const [showShowcase, setShowShowcase] = useState(false);
   const [quests, setQuests] = useState<any[]>([]);
   const [shopItems, setShopItems] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
@@ -399,29 +398,13 @@ export default function Home() {
     );
   }
 
-  // Render Login and Sign Up Page (AuthModal) by default on entry, or 3D Showcase if toggled
+  // Always show Frontpage (Landing Page) first when opening the link!
   if (!hasEnteredApp || !user) {
-    if (showShowcase) {
-      return (
-        <LandingPage
-          currentUser={user}
-          onEnterRealm={() => setHasEnteredApp(true)}
-          onBackToLogin={() => setShowShowcase(false)}
-          onLoginSuccess={(newUser) => {
-            setUser(newUser);
-            setHasEnteredApp(true);
-            refreshAll();
-          }}
-        />
-      );
-    }
-
     return (
-      <AuthModal
+      <LandingPage
         currentUser={user}
         onEnterRealm={() => setHasEnteredApp(true)}
-        onShowShowcase={() => setShowShowcase(true)}
-        onSuccess={(newUser) => {
+        onLoginSuccess={(newUser) => {
           setUser(newUser);
           setHasEnteredApp(true);
           refreshAll();

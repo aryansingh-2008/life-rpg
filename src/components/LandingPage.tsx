@@ -25,14 +25,12 @@ import { sounds } from "@/lib/soundEffects";
 interface LandingPageProps {
   currentUser?: any;
   onEnterRealm?: () => void;
-  onBackToLogin?: () => void;
   onLoginSuccess: (user: any) => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   currentUser,
   onEnterRealm,
-  onBackToLogin,
   onLoginSuccess,
 }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -86,19 +84,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {onBackToLogin && (
-              <button
-                type="button"
-                onClick={() => {
-                  sounds.playClick();
-                  onBackToLogin();
-                }}
-                className="px-3 py-1.5 rounded-xl font-mono text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-1"
-              >
-                <span>← Back to Login</span>
-              </button>
-            )}
-
             {/* Quick Demo Play Button */}
             <button
               type="button"
@@ -423,6 +408,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <AuthModal
           initialMode={authInitialMode}
           currentUser={currentUser}
+          onClose={() => setShowAuthModal(false)}
           onEnterRealm={onEnterRealm}
           onSuccess={(user) => {
             setShowAuthModal(false);

@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparkles, User, Lock, Mail, ArrowRight, Zap, Play } from "lucide-react";
+import { Sparkles, User, Lock, Mail, ArrowRight, Zap, Play, X } from "lucide-react";
 import { sounds } from "@/lib/soundEffects";
 
 interface AuthModalProps {
   currentUser?: any;
   initialMode?: "LOGIN" | "SIGNUP";
+  onClose?: () => void;
   onEnterRealm?: () => void;
   onShowShowcase?: () => void;
   onSuccess: (user: any) => void;
@@ -15,6 +16,7 @@ interface AuthModalProps {
 export const AuthModal: React.FC<AuthModalProps> = ({
   currentUser,
   initialMode = "LOGIN",
+  onClose,
   onEnterRealm,
   onShowShowcase,
   onSuccess,
@@ -78,6 +80,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-4 overflow-y-auto">
       <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-cyan-500/30 p-6 sm:p-8 shadow-2xl shadow-cyan-950/50">
+        {onClose && (
+          <button
+            type="button"
+            onClick={() => {
+              sounds.playClick();
+              onClose();
+            }}
+            className="absolute top-4 right-4 z-20 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            title="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
+
         {/* Glow Accent */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
