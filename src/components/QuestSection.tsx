@@ -43,7 +43,7 @@ interface Quest {
 
 interface QuestSectionProps {
   quests: Quest[];
-  onCompleteQuest: (questId: string) => Promise<void>;
+  onCompleteQuest: (questId: string, forceToggle?: boolean) => Promise<void>;
   onCreateQuest: (questData: {
     title: string;
     description?: string;
@@ -97,8 +97,22 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
 
   const handleCheckboxClick = async (e: React.MouseEvent, q: Quest) => {
     e.stopPropagation();
+    if (isProcessingId === q.id) return;
 
-    // Instant local feedback
+    // 1. If it's a DAILY and already completed today: it's done for today!
+    if (q.type === "DAILY" && q.completed) {
+      sounds.playClick();
+      return;
+    }
+
+    // 2. If it's a BOUNTY and already completed: toggle/undo it!
+    if (q.type === "BOUNTY" && q.completed) {
+      sounds.playClick();
+      await onCompleteQuest(q.id, true);
+      return;
+    }
+
+    // 3. Completing an active quest: Instant visual feedback
     setJustCompletedId(q.id);
     setTimeout(() => setJustCompletedId(null), 1500);
 
@@ -123,7 +137,7 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
       // particle effect fallback
     }
 
-    await onCompleteQuest(q.id);
+    await onCompleteQuest(q.id, false);
   };
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
@@ -324,13 +338,20 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
                   {/* Complete Checkbox */}
                   <button
                     onClick={(e) => handleCheckboxClick(e, quest)}
-                    disabled={isProcessing}
+                    disabled={isProcessing || (quest.type === "DAILY" && quest.completed)}
+                    title={
+                      quest.type === "DAILY" && quest.completed
+                        ? "Completed for today (Resets tomorrow at midnight)"
+                        : quest.type === "BOUNTY" && quest.completed
+                        ? "Click to uncheck this bounty"
+                        : "Click to complete"
+                    }
                     aria-label={`Mark quest ${quest.title} as ${quest.completed ? "incomplete" : "complete"}`}
                     className={`mt-0.5 p-2 -m-1 rounded-xl transition-all active:scale-90 shrink-0 ${
                       quest.completed || justCompletedId === quest.id
                         ? "text-emerald-400 hover:text-emerald-300"
                         : "text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10"
-                    }`}
+                    } ${quest.type === "DAILY" && quest.completed ? "cursor-default opacity-80" : ""}`}
                   >
                     {quest.completed || justCompletedId === quest.id ? (
                       <CheckCircle2 className="w-6 h-6 text-emerald-400 animate-in zoom-in-75 duration-200" />
@@ -348,6 +369,11 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
                       {justCompletedId === quest.id && (
                         <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
                           ✓ CLAIMED!
+                        </span>
+                      )}
+                      {quest.type === "DAILY" && quest.completed && (
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                          ✓ Completed Today • Resets Midnight
                         </span>
                       )}
                       <span

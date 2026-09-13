@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { getRequiredXpForNextLevel, getRequiredGoldForLevelUp } from "@/lib/rpgEngine";
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,11 +44,49 @@ export async function POST(req: NextRequest) {
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: updateData,
+      include: {
+        inventory: { include: { item: true } },
+        bossState: true,
+      },
     });
 
     return NextResponse.json({
       success: true,
-      user: updatedUser,
+      user: {
+        id: updatedUser.id,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        level: updatedUser.level,
+        xp: updatedUser.xp,
+        nextLevelXp: getRequiredXpForNextLevel(updatedUser.level),
+        requiredGoldForLevelUp: getRequiredGoldForLevelUp(updatedUser.level),
+        gold: updatedUser.gold,
+        hp: updatedUser.hp,
+        maxHp: updatedUser.maxHp,
+        mana: updatedUser.mana,
+        maxMana: updatedUser.maxMana,
+        streak: updatedUser.streak,
+        streakShields: updatedUser.streakShields,
+        strength: updatedUser.strength,
+        intellect: updatedUser.intellect,
+        agility: updatedUser.agility,
+        vitality: updatedUser.vitality,
+        spirit: updatedUser.spirit,
+        title: updatedUser.title,
+        unspentPoints: updatedUser.unspentPoints,
+        characterId: updatedUser.characterId || "aarav",
+        unlockedCharacters: Array.from(
+          new Set([
+            "aarav",
+            "ananya",
+            ...(updatedUser.unlockedCharacters
+              ? updatedUser.unlockedCharacters.split(",").map((s) => s.trim())
+              : []),
+          ])
+        ),
+        inventory: updatedUser.inventory,
+        bossState: updatedUser.bossState,
+      },
       message: `Allocated +1 point to ${attrUpper}!`,
     });
   } catch (error: any) {

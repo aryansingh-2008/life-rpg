@@ -13,6 +13,51 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Authoritatively reset DAILY quests that were completed on previous calendar days
+    const now = new Date();
+    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+    const userDailies = await prisma.quest.findMany({
+      where: {
+        userId: user.id,
+        type: "DAILY",
+      },
+    });
+
+    for (const daily of userDailies) {
+      if (daily.completedAt) {
+        const compDate = new Date(daily.completedAt);
+        const compMidnight = new Date(
+          compDate.getFullYear(),
+          compDate.getMonth(),
+          compDate.getDate()
+        ).getTime();
+        const daysDiff = Math.round((todayMidnight - compMidnight) / (1000 * 60 * 60 * 24));
+
+        if (daily.completed && daysDiff >= 1) {
+          // Completed on a previous day -> Reset for today!
+          // If daysDiff === 1, streak is intact from yesterday.
+          // If daysDiff >= 2, missed 1+ days -> streak resets to 0.
+          const newStreak = daysDiff === 1 ? daily.streak : 0;
+          await prisma.quest.update({
+            where: { id: daily.id },
+            data: {
+              completed: false,
+              streak: newStreak,
+            },
+          });
+        } else if (!daily.completed && daysDiff >= 2 && daily.streak > 0) {
+          // Missed completing yesterday -> streak broken
+          await prisma.quest.update({
+            where: { id: daily.id },
+            data: {
+              streak: 0,
+            },
+          });
+        }
+      }
+    }
+
     const { searchParams } = new URL(req.url);
     const type = searchParams.get("type");
     const attribute = searchParams.get("attribute");

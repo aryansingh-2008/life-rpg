@@ -74,13 +74,13 @@ export async function POST(
       newStreak
     );
 
-    // 3. Non-linear Level Progression Evaluation with Gold Requirement
+    // 3. Level Progression Evaluation (Pure XP progression so quests never steal player's coins!)
     const totalPotentialGold = user.gold + rewards.totalGold;
     const progression = calculateLevelProgression(
       user.level,
       user.xp,
       rewards.totalXp,
-      totalPotentialGold
+      Infinity // Never auto-deduct user's coins on quest complete!
     );
 
     // 4. Attribute & Stat Point updates
@@ -226,6 +226,7 @@ export async function POST(
       quest: updatedQuest,
       user: {
         ...updatedUser,
+        bossState: updatedBoss,
         streakShields: updatedUser.streakShields,
         streakNotification: streakEval.message,
         nextLevelXp: getRequiredXpForNextLevel(updatedUser.level),

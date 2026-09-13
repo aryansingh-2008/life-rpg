@@ -117,11 +117,13 @@ export default function Home() {
   }, [refreshAll]);
 
   // Complete quest handler with authoritative backend progression
-  const handleCompleteQuest = async (questId: string) => {
+  const handleCompleteQuest = async (questId: string, forceToggle?: boolean) => {
     setIsProcessingQuestId(questId);
     try {
       const res = await fetch(`/api/quests/${questId}/complete`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ forceToggle }),
       });
       const data = await res.json();
 
@@ -129,8 +131,18 @@ export default function Home() {
         throw new Error(data.error || "Failed to complete quest");
       }
 
+      // If it was an uncomplete/undo action
+      if (data.message === "Quest uncompleted") {
+        const questsRes = await fetch("/api/quests");
+        if (questsRes.ok) {
+          const qData = await questsRes.json();
+          setQuests(qData.quests);
+        }
+        return;
+      }
+
       // Update user state authoritatively
-      setUser(data.user);
+      setUser((prev: any) => ({ ...prev, ...data.user }));
       if (data.user?.streakNotification) {
         setStreakNotice(data.user.streakNotification);
       }
@@ -288,7 +300,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Allocation failed");
 
-      setUser(data.user);
+      setUser((prev: any) => ({ ...prev, ...data.user }));
       sounds.playQuestComplete();
     } catch (err: any) {
       alert(err.message);
@@ -309,7 +321,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to recruit character");
 
-      setUser(data.user);
+      setUser((prev: any) => ({ ...prev, ...data.user }));
       refreshAll();
     } catch (err: any) {
       alert(err.message);
@@ -330,7 +342,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to equip character");
 
-      setUser(data.user);
+      setUser((prev: any) => ({ ...prev, ...data.user }));
       refreshAll();
     } catch (err: any) {
       alert(err.message);
@@ -349,7 +361,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Ascension failed");
 
-      setUser(data.user);
+      setUser((prev: any) => ({ ...prev, ...data.user }));
       setLevelUpData({
         isOpen: true,
         newLevel: data.progression.newLevel,
