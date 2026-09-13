@@ -84,7 +84,7 @@ Traditional habit trackers fail because they suffer from the **delayed gratifica
 - Atomic database transactions (`prisma.$transaction`) ensure data consistency across leveling, gold rewards, quest logs, and boss health.
 - Streak multipliers automatically reward consecutive daily activity (+5% per consecutive day up to +50%).
 
-### 4. Boss Raid Arena (Kinetic Habit Slaying)
+### 4. Boss Raid Arena (Dynamic Task Battles)
 - Active boss: **Malakor the Procrastinator** (Lord of Endless Delay).
 - Every completed quest strikes the boss with kinetic damage.
 - Slaying the boss triggers screen-wide celebratory fireworks and awards a +150 Coins victory bounty before spawning the next tier boss.
@@ -94,7 +94,7 @@ Traditional habit trackers fail because they suffer from the **delayed gratifica
 - Procedural 8-bit retro sounds for button ticks, quest completions, gold pickup, boss hits, and level-up victory fanfares.
 - Persistent mute/unmute control.
 
-### 6. Historical Audit Chronicles
+### 6. Activity Logs & Quest History
 - Full audit log of completed quests, timestamps, XP earned, and attributes boosted stored persistently in the database.
 
 ### 7. Authoritative Streak Protection Shield System
@@ -160,36 +160,33 @@ To evaluate the live platform immediately without signing up:
   - **Hosting**: Vercel Global Edge Network with automatic Next.js 14 App Router serverless optimization.
   - **Cloud Database**: Managed PostgreSQL on Supabase (`aws-0-ap-south-1.pooler.supabase.com`) with IPv4 transaction connection pooling (`pgbouncer`).
   - **Database Migration**: Fully migrated and pre-seeded via Prisma ORM (`prisma db push` + `prisma db seed`).
-  - **Zero-Tolerance Compliance**: 100% reliable database persistence with cross-device synchronization and page refresh retention.
+  - **Persistence Guarantee**: 100% reliable database persistence with cross-device synchronization and page refresh retention.
 
 ---
 
-## 🎥 Demonstration Video Walkthrough (90–180s)
+## 🎥 Demonstration Video Walkthrough
 
 > 📹 **Official Walkthrough Video**: [Direct Video Stream / Download (`aetheria-demo-walkthrough.webm`)](https://life-rpg-nine-gules.vercel.app/aetheria-demo-walkthrough.webm)  
-> *Recorded in crystal-clear 1080p Full HD (9.94 MB, 108 seconds, strictly under 100MB requirement) with custom glowing cyan cyber cursor, demonstrating login, 3D avatar, Adventurer ID profile, quest creation, quest completion & boss attack, leveling celebration, armory, 20 heroes roster, and F5 refresh Supabase PostgreSQL persistence.*
+> *Recorded in 1080p Full HD (9.94 MB, 108 seconds) with custom glowing cyan cyber cursor, demonstrating login, 3D avatar, Adventurer ID profile, quest creation, quest completion & boss attack, leveling celebration, armory, 20 heroes roster, and F5 refresh Supabase PostgreSQL persistence.*
 
 | Time Window | Visual Action | Narrative Point |
-
 | :--- | :--- | :--- |
-| **0:00 - 0:25** | Open app, show Auth screen, click **"1-Click Demo Character Login"** or Sign Up. | Introduce Aetheria: Solving the delayed gratification problem of habit trackers with a full-stack 3D Life RPG. |
+| **0:00 - 0:25** | Open app, show Auth screen, click **"TRY INSTANT DEMO"** or Sign Up. | Introduce Aetheria: Solving the delayed gratification problem of habit trackers with a full-stack 3D Life RPG. |
 | **0:25 - 0:50** | Inspect the **3D Hero Avatar** by dragging with the mouse. Show the equipped weapon/shield. | Highlight Three.js integration, WebGL rendering, and responsive controls. |
 | **0:50 - 1:15** | Click **"NEW QUEST"**, create a Hard Intellect quest (e.g. "LeetCode Grind"). Show instant XP/Gold preview. | Demonstrate full CRUD and server-side difficulty-to-reward calculation. |
 | **1:15 - 1:40** | Complete a quest! Sound chime plays, confetti bursts, boss takes -45 HP damage, and **Level Up Modal** pops up. | Showcase tactile micro-interactions, Web Audio synth, non-linear leveling, and boss damage. |
 | **1:40 - 2:05** | Open **Relic Armory & Shop**. Buy and equip **"Neon Photon Wings"**. Switch back and show wings rendered on the 3D hero! | Demonstrate in-game economy, gold verification, and dynamic 3D equipment binding. |
-| **2:05 - 2:30** | Press **F5 (Page Refresh)**. | **Zero-Tolerance Compliance**: Prove all stats, equipped gear, quests, and historical logs remain completely intact via real database persistence! |
+| **2:05 - 2:30** | Press **F5 (Page Refresh)**. | **Database Persistence**: Prove all stats, equipped gear, quests, and historical logs remain completely intact via real PostgreSQL cloud persistence. |
 
 ---
 
-## 🛡️ System Robustness & Architectural Standards
+## 🛠️ Engineering Standards & Code Quality
 
-| Reliability Criterion | Status | Implementation Verification |
-| :--- | :---: | :--- |
-| **Zero Broken Assets** | ✅ PASS | Zero external audio or image dependencies. Self-contained synthesized Web Audio and procedural 3D WebGL. |
-| **Authoritative Persistence** | ✅ PASS | Strict server-side database persistence using Prisma ORM & Supabase PostgreSQL. Zero reliance on `localStorage` for primary state. |
-| **Zero Build Errors** | ✅ PASS | Verified clean Next.js 14 production build (`npm run build`) with zero compile or type errors. |
-| **Zero Runtime Crashes** | ✅ PASS | Defensive error boundaries, typed API responses, and resilient client-side fallbacks. |
-| **Engineering Track Record** | ✅ PASS | Granular, chronological Git commit history documenting all milestones and architectural decisions. |
+- **Self-Contained Synthesized Audio & Procedural 3D**: Zero external audio or image dependencies. Built-in Web Audio API synthesizer and procedural Three.js WebGL meshes prevent broken asset errors.
+- **Server-Authoritative Anti-Cheat**: Strict server-side verification using Prisma ORM & Supabase PostgreSQL. Zero reliance on `localStorage` for primary state.
+- **Automated Smoke Tests**: Run `npm test` to verify database connection, bcrypt hashing, JWT validation, non-linear leveling curves, and gold transaction safety.
+- **Defensive Error Boundaries**: Comprehensive error boundaries, typed API responses, and resilient client-side fallbacks for network interruptions.
+- **Granular Commit History**: Chronological Git commit history documenting all technical milestones and architectural decisions.
 
 ---
 
