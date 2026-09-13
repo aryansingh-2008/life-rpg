@@ -10,7 +10,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 
 [![Live Demo](https://img.shields.io/badge/LIVE_PRODUCTION_URL-https%3A%2F%2Flife--rpg--nine--gules.vercel.app-00f2fe?style=for-the-badge&logo=vercel)](https://life-rpg-nine-gules.vercel.app)
-[![Walkthrough Video](https://img.shields.io/badge/WALKTHROUGH_VIDEO-1080p_Full_HD-ff0055?style=for-the-badge)](https://life-rpg-nine-gules.vercel.app/aetheria-demo-walkthrough.webm)
+[![Walkthrough Video](https://img.shields.io/badge/WALKTHROUGH_VIDEO-1080p_Full_HD_MP4-ff0055?style=for-the-badge)](https://life-rpg-nine-gules.vercel.app/aetheria-walkthrough-submission.mp4)
 
 ---
 

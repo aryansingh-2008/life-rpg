@@ -34,6 +34,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# recordings
+*.webm
+public/video-recordings/
+public/submission-recordings/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
