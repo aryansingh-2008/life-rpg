@@ -73,7 +73,7 @@ export const ATTRIBUTES_CONFIG: Record<
  * Scaled significantly so levels take sustained effort and long-term consistency.
  */
 export function getRequiredXpForNextLevel(level: number): number {
-  return Math.floor(400 * Math.pow(level, 1.65));
+  return Math.floor(100 * Math.pow(level, 1.55));
 }
 
 /**

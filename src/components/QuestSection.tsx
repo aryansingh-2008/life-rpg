@@ -87,6 +87,7 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
   const [difficulty, setDifficulty] = useState<DifficultyType>("MEDIUM");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  const [justCompletedId, setJustCompletedId] = useState<string | null>(null);
 
   const filteredQuests = quests.filter((q) => {
     if (activeTab !== "ALL" && q.type !== activeTab) return false;
@@ -96,19 +97,31 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
 
   const handleCheckboxClick = async (e: React.MouseEvent, q: Quest) => {
     e.stopPropagation();
-    sounds.playQuestComplete();
 
-    // Trigger local particle burst near clicked element
-    const rect = (e.target as HTMLElement).getBoundingClientRect();
-    const x = (rect.left + rect.width / 2) / window.innerWidth;
-    const y = (rect.top + rect.height / 2) / window.innerHeight;
+    // Instant local feedback
+    setJustCompletedId(q.id);
+    setTimeout(() => setJustCompletedId(null), 1500);
 
-    confetti({
-      particleCount: 25,
-      spread: 45,
-      origin: { x, y },
-      colors: ["#00f2ff", "#10b981", "#f59e0b"],
-    });
+    try {
+      sounds.playQuestComplete();
+    } catch {}
+
+    try {
+      if (typeof window !== "undefined" && e.currentTarget) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+        confetti({
+          particleCount: 25,
+          spread: 45,
+          origin: { x, y },
+          colors: ["#00f2ff", "#10b981", "#f59e0b"],
+        });
+      }
+    } catch (err) {
+      // particle effect fallback
+    }
 
     await onCompleteQuest(q.id);
   };
@@ -300,22 +313,29 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
                     : "bg-slate-900/60 border-slate-800/90 hover:border-slate-700 hover:bg-slate-900/80 shadow-lg"
                 }`}
               >
-                <div className="flex items-start gap-3.5 flex-1">
+                <div
+                  onClick={(e) => {
+                    if (!quest.completed && !isProcessing) {
+                      handleCheckboxClick(e, quest);
+                    }
+                  }}
+                  className={`flex items-start gap-3.5 flex-1 ${!quest.completed ? "cursor-pointer" : ""}`}
+                >
                   {/* Complete Checkbox */}
                   <button
                     onClick={(e) => handleCheckboxClick(e, quest)}
                     disabled={isProcessing}
                     aria-label={`Mark quest ${quest.title} as ${quest.completed ? "incomplete" : "complete"}`}
-                    className={`mt-0.5 p-1 rounded-lg transition-transform active:scale-90 ${
-                      quest.completed
+                    className={`mt-0.5 p-2 -m-1 rounded-xl transition-all active:scale-90 shrink-0 ${
+                      quest.completed || justCompletedId === quest.id
                         ? "text-emerald-400 hover:text-emerald-300"
-                        : "text-slate-500 hover:text-cyan-400"
+                        : "text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10"
                     }`}
                   >
-                    {quest.completed ? (
-                      <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+                    {quest.completed || justCompletedId === quest.id ? (
+                      <CheckCircle2 className="w-6 h-6 text-emerald-400 animate-in zoom-in-75 duration-200" />
                     ) : (
-                      <Circle className="w-6 h-6" />
+                      <Circle className="w-6 h-6 hover:text-cyan-300" />
                     )}
                   </button>
 
@@ -325,6 +345,11 @@ export const QuestSection: React.FC<QuestSectionProps> = ({
                       <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
                         {quest.type}
                       </span>
+                      {justCompletedId === quest.id && (
+                        <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
+                          ✓ CLAIMED!
+                        </span>
+                      )}
                       <span
                         className={`flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded border ${attrConfig.bg} ${attrConfig.color}`}
                       >

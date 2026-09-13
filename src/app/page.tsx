@@ -30,6 +30,7 @@ export default function Home() {
 
   // Streak notification state
   const [streakNotice, setStreakNotice] = useState<string | null>(null);
+  const [questRewardNotice, setQuestRewardNotice] = useState<string | null>(null);
 
   // Interactive feedback states
   const [isProcessingQuestId, setIsProcessingQuestId] = useState<string | null>(null);
@@ -132,6 +133,15 @@ export default function Home() {
       if (data.user?.streakNotification) {
         setStreakNotice(data.user.streakNotification);
       }
+
+      // Display rewarding feedback banner
+      const xpGained = data.rewards?.totalXp || 30;
+      const coinsGained = data.rewards?.totalGold || 1;
+      const bossDmg = data.boss?.bossDamageDealt || 0;
+      setQuestRewardNotice(
+        `✨ Quest Completed! +${xpGained} XP Gained • +${coinsGained} Coins Earned • Boss Hit -${bossDmg} HP!`
+      );
+      setTimeout(() => setQuestRewardNotice(null), 5000);
 
       // Check if user leveled up
       if (data.progression && data.progression.didLevelUp) {
@@ -414,6 +424,24 @@ export default function Home() {
             >
               <X className="w-3.5 h-3.5" />
               <span>Dismiss</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Real-time Quest Completion Feedback Banner */}
+      {questRewardNotice && (
+        <div className="bg-gradient-to-r from-cyan-950/95 via-emerald-950/95 to-slate-900 border-b border-cyan-500/50 px-3 sm:px-4 py-2.5 shadow-lg shadow-cyan-950/60 animate-fadeIn sticky top-[57px] z-30">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-200">
+              <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 animate-bounce" />
+              <span>{questRewardNotice}</span>
+            </div>
+            <button
+              onClick={() => setQuestRewardNotice(null)}
+              className="text-slate-400 hover:text-white text-xs font-mono p-1 rounded hover:bg-slate-800 transition shrink-0"
+            >
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
