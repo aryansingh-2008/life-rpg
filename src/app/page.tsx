@@ -19,6 +19,7 @@ import { Loader2, Shield, X, Swords, Sparkles, Zap, ScrollText } from "lucide-re
 
 export default function Home() {
   const [user, setUser] = useState<any | null>(null);
+  const [hasEnteredApp, setHasEnteredApp] = useState(false);
   const [quests, setQuests] = useState<any[]>([]);
   const [shopItems, setShopItems] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
@@ -369,6 +370,7 @@ export default function Home() {
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
+    setHasEnteredApp(false);
   };
 
   if (loading) {
@@ -384,8 +386,19 @@ export default function Home() {
     );
   }
 
-  if (!user) {
-    return <LandingPage onLoginSuccess={(newUser) => { setUser(newUser); refreshAll(); }} />;
+  // Always show Frontpage / Landing Page first when opening the link!
+  if (!hasEnteredApp || !user) {
+    return (
+      <LandingPage
+        currentUser={user}
+        onEnterRealm={() => setHasEnteredApp(true)}
+        onLoginSuccess={(newUser) => {
+          setUser(newUser);
+          setHasEnteredApp(true);
+          refreshAll();
+        }}
+      />
+    );
   }
 
   return (
@@ -624,6 +637,7 @@ export default function Home() {
         }}
         onAccountDeleted={() => {
           setUser(null);
+          setHasEnteredApp(false);
         }}
       />
     </main>
