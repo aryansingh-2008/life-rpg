@@ -25,12 +25,14 @@ import { sounds } from "@/lib/soundEffects";
 interface LandingPageProps {
   currentUser?: any;
   onEnterRealm?: () => void;
+  onBackToLogin?: () => void;
   onLoginSuccess: (user: any) => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   currentUser,
   onEnterRealm,
+  onBackToLogin,
   onLoginSuccess,
 }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -83,9 +85,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {onBackToLogin && (
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  onBackToLogin();
+                }}
+                className="px-3 py-1.5 rounded-xl font-mono text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-1"
+              >
+                <span>← Back to Login</span>
+              </button>
+            )}
+
             {/* Quick Demo Play Button */}
             <button
+              type="button"
               onClick={handleDemoLogin}
               disabled={isDemoLoading}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 shadow-md shadow-amber-500/10 active:scale-95 transition"
@@ -95,8 +111,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <span>{isDemoLoading ? "CONNECTING..." : "TRY INSTANT DEMO"}</span>
             </button>
 
-            {currentUser ? (
+            {currentUser && (
               <button
+                type="button"
                 onClick={() => {
                   sounds.playQuestComplete();
                   if (onEnterRealm) onEnterRealm();
@@ -106,23 +123,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <span>ENTER REALM</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
-            ) : (
-              <>
-                <button
-                  onClick={() => openAuth("LOGIN")}
-                  className="px-3 py-1.5 rounded-xl font-mono text-xs font-bold text-slate-300 hover:text-white transition"
-                >
-                  Sign In
-                </button>
-
-                <button
-                  onClick={() => openAuth("SIGNUP")}
-                  className="hidden sm:inline-block px-4 py-1.5 rounded-xl font-mono text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 active:scale-95 transition"
-                >
-                  Create Hero
-                </button>
-              </>
             )}
+
+            <button
+              type="button"
+              onClick={() => openAuth("LOGIN")}
+              className="px-3 py-1.5 rounded-xl font-mono text-xs font-bold text-slate-300 hover:text-white transition"
+            >
+              Sign In
+            </button>
+
+            <button
+              type="button"
+              onClick={() => openAuth("SIGNUP")}
+              className="px-3.5 sm:px-4 py-1.5 rounded-xl font-mono text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 active:scale-95 transition"
+            >
+              Create Hero
+            </button>
           </div>
         </div>
       </header>
@@ -152,48 +169,48 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
               {currentUser ? (
-                <>
-                  <button
-                    onClick={() => {
-                      sounds.playQuestComplete();
-                      if (onEnterRealm) onEnterRealm();
-                    }}
-                    className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 flex items-center justify-center gap-2.5 shadow-xl shadow-cyan-500/25 active:scale-95 transition"
-                  >
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>ENTER REALM AS {currentUser.username.toUpperCase()}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onClick={handleDemoLogin}
-                    disabled={isDemoLoading}
-                    className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-slate-900/90 hover:bg-slate-800 text-amber-300 border border-amber-500/40 flex items-center justify-center gap-2 active:scale-95 transition"
-                  >
-                    <Zap className="w-4 h-4 text-amber-400 fill-current" />
-                    <span>{isDemoLoading ? "CONNECTING..." : "ENTER DEMO REALM"}</span>
-                  </button>
-                </>
+                <button
+                  type="button"
+                  onClick={() => {
+                    sounds.playQuestComplete();
+                    if (onEnterRealm) onEnterRealm();
+                  }}
+                  className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 flex items-center justify-center gap-2.5 shadow-xl shadow-cyan-500/25 active:scale-95 transition"
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  <span>CONTINUE AS {currentUser.username.toUpperCase()}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               ) : (
-                <>
-                  <button
-                    onClick={handleDemoLogin}
-                    disabled={isDemoLoading}
-                    className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 flex items-center justify-center gap-2.5 shadow-xl shadow-cyan-500/25 active:scale-95 transition"
-                  >
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>{isDemoLoading ? "INITIALIZING REALM..." : "ENTER DEMO REALM (1-CLICK PLAY)"}</span>
-                  </button>
-
-                  <button
-                    onClick={() => openAuth("SIGNUP")}
-                    className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700 flex items-center justify-center gap-2 active:scale-95 transition"
-                  >
-                    <span>FORGE NEW HERO</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </>
+                <button
+                  type="button"
+                  onClick={() => openAuth("LOGIN")}
+                  className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 flex items-center justify-center gap-2.5 shadow-xl shadow-cyan-500/25 active:scale-95 transition"
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  <span>SIGN IN & ENTER REALM</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               )}
+
+              <button
+                type="button"
+                onClick={() => openAuth("SIGNUP")}
+                className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center gap-2 active:scale-95 transition"
+              >
+                <span>FORGE NEW HERO</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDemoLogin}
+                disabled={isDemoLoading}
+                className="px-6 py-3.5 rounded-2xl font-mono text-sm font-bold bg-slate-900/90 hover:bg-slate-800 text-amber-300 border border-amber-500/40 flex items-center justify-center gap-2 active:scale-95 transition"
+              >
+                <Zap className="w-4 h-4 text-amber-400 fill-current" />
+                <span>{isDemoLoading ? "CONNECTING..." : "TRY INSTANT DEMO"}</span>
+              </button>
             </div>
 
             {/* Quick Metrics Bar */}
@@ -404,6 +421,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Auth Modal Triggered by Buttons */}
       {showAuthModal && (
         <AuthModal
+          initialMode={authInitialMode}
+          currentUser={currentUser}
+          onEnterRealm={onEnterRealm}
           onSuccess={(user) => {
             setShowAuthModal(false);
             onLoginSuccess(user);
