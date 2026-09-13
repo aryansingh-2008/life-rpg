@@ -137,6 +137,34 @@ export async function POST(
       updatedBossTitle = nextBossInfo.title;
     }
 
+    // 5b. Authoritative Calendar-Day Quest Streak Evaluation
+    let newQuestStreak = quest.streak;
+    if (!quest.completedAt) {
+      // First time completing this quest
+      newQuestStreak = 1;
+    } else {
+      const lastCompletedDate = new Date(quest.completedAt);
+      const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      const lastDateOnly = new Date(
+        lastCompletedDate.getFullYear(),
+        lastCompletedDate.getMonth(),
+        lastCompletedDate.getDate()
+      ).getTime();
+
+      const daysDifference = Math.round((nowDateOnly - lastDateOnly) / (1000 * 60 * 60 * 24));
+
+      if (daysDifference <= 0) {
+        // SAME CALENDAR DAY: Do NOT increment day streak!
+        newQuestStreak = Math.max(1, quest.streak);
+      } else if (daysDifference === 1) {
+        // NEXT CONSECUTIVE DAY: Increment day streak by 1!
+        newQuestStreak = quest.streak + 1;
+      } else {
+        // MISSED 1 OR MORE DAYS: Reset streak back to 1!
+        newQuestStreak = 1;
+      }
+    }
+
     // Execute atomic transaction for persistence
     const [updatedUser, updatedQuest, updatedBoss] = await prisma.$transaction([
       prisma.user.update({
@@ -163,7 +191,7 @@ export async function POST(
         where: { id },
         data: {
           completed: quest.type === "HABIT" ? false : true, // Habits stay active for repeating
-          streak: quest.streak + 1,
+          streak: newQuestStreak,
           completedAt: now,
         },
       }),
