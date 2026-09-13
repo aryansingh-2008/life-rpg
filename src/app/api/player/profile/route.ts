@@ -188,3 +188,64 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const authUser = await getAuthUser(req);
+    if (!authUser) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const isDemoUser = authUser.email === "hero@aetheria.rpg";
+
+    if (isDemoUser) {
+      // Clean reset for shared demo account so public demo stays healthy
+      await prisma.$transaction([
+        prisma.quest.deleteMany({ where: { userId: authUser.id } }),
+        prisma.questLog.deleteMany({ where: { userId: authUser.id } }),
+        prisma.userInventory.deleteMany({ where: { userId: authUser.id } }),
+        prisma.user.update({
+          where: { id: authUser.id },
+          data: {
+            level: 3,
+            xp: 120,
+            gold: 280,
+            hp: 100,
+            mana: 50,
+            streak: 3,
+            streakShields: 1,
+            characterId: "aarav",
+            title: "The Wanderer",
+            username: "Aarav",
+          },
+        }),
+      ]);
+    } else {
+      // Permanently delete user from database (cascades to quests, logs, inventory, bossState)
+      await prisma.user.delete({
+        where: { id: authUser.id },
+      });
+    }
+
+    const response = NextResponse.json({
+      success: true,
+      message: "Account and associated game data deleted successfully.",
+    });
+
+    // Clear session cookie
+    response.cookies.set({
+      name: TOKEN_COOKIE_NAME,
+      value: "",
+      maxAge: 0,
+      path: "/",
+    });
+
+    return response;
+  } catch (error: any) {
+    console.error("Delete account error:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to delete account" },
+      { status: 500 }
+    );
+  }
+}

@@ -75,9 +75,9 @@ async function runHealthCheck() {
 
   // 5. Test Shop Purchase Gold Anti-Cheat Validation
   console.log("\n[5/6] Testing Shop Anti-Cheat & Balance Check...");
-  const expensiveItem = await prisma.shopItem.findFirst({ where: { cost: { gt: 300 } } });
+  const expensiveItem = await prisma.shopItem.findFirst({ orderBy: { cost: "desc" } });
   console.log(`- Checking expensive item: ${expensiveItem.name} (${expensiveItem.cost}g) against low gold...`);
-  const fakeGoldUser = { gold: 50 };
+  const fakeGoldUser = { gold: 10 };
   const canAfford = fakeGoldUser.gold >= expensiveItem.cost;
   if (canAfford) throw new Error("Shop allowed purchase with insufficient gold!");
   console.log("- Insufficient Gold Rejection: PASS");

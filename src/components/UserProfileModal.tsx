@@ -16,6 +16,8 @@ import {
   Save,
   Swords,
   Coins,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { getCharacterById } from "@/lib/charactersConfig";
 import { sounds } from "@/lib/soundEffects";
@@ -44,6 +46,7 @@ interface UserProfileModalProps {
     spirit?: number;
   };
   onProfileUpdated: (updatedUser: any) => void;
+  onAccountDeleted?: () => void;
 }
 
 const PRESET_TITLES = [
@@ -63,6 +66,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   onClose,
   user,
   onProfileUpdated,
+  onAccountDeleted,
 }) => {
   const [username, setUsername] = useState(user.username);
   const [title, setTitle] = useState(user.title);
@@ -70,8 +74,32 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     !PRESET_TITLES.includes(user.title)
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/player/profile", {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete account");
+      }
+      sounds.playClick();
+      if (onAccountDeleted) {
+        onAccountDeleted();
+      }
+      onClose();
+    } catch (err: any) {
+      setErrorMsg(err.message || "Failed to delete account");
+      setIsDeleting(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -347,6 +375,54 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               </button>
             </div>
           </form>
+        </div>
+
+        {/* Danger Zone: Permanent Account Deletion */}
+        <div className="mt-6 pt-5 border-t border-red-500/20 relative z-10">
+          <div className="p-4 rounded-2xl bg-red-950/30 border border-red-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <div>
+                <h5 className="text-xs font-bold text-red-300 font-mono">
+                  DANGER ZONE // PERMANENT ACCOUNT DELETION
+                </h5>
+                <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                  Permanently erase your hero dossier, quests, inventory, and cloud database records.
+                </p>
+              </div>
+            </div>
+
+            {isConfirmingDelete ? (
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsConfirmingDelete(false)}
+                  disabled={isDeleting}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-mono font-bold shadow-lg shadow-red-600/30 transition active:scale-95"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{isDeleting ? "DELETING..." : "CONFIRM DELETE"}</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsConfirmingDelete(true)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 hover:text-red-300 text-xs font-mono font-bold transition shrink-0 self-end sm:self-auto"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>DELETE ACCOUNT</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

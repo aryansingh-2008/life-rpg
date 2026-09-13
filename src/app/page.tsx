@@ -594,6 +594,9 @@ export default function Home() {
         onProfileUpdated={(updatedUser) => {
           setUser((prev: any) => ({ ...prev, ...updatedUser }));
         }}
+        onAccountDeleted={() => {
+          setUser(null);
+        }}
       />
     </main>
   );
